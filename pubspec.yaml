@@ -1,0 +1,12 @@
+name: very_good_test_runner
+description: A test runner for Flutter and Dart created by Very Good Ventures
+version: 1.0.0+1
+publish_to: none
+
+environment:
+  sdk: ">=2.16.0 <3.0.0"
+
+dev_dependencies:
+  mocktail: ^0.2.0
+  test: ^1.19.2
+  very_good_analysis: ^2.4.0

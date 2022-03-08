@@ -1,0 +1,7 @@
+name: very_good_test_runner
+
+on: pull_request
+
+jobs:
+  build:
+    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/dart_package.yml@v1
