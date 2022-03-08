@@ -30,7 +30,6 @@ void main() {
     // React to `TestEvent` instances.
     print(event);
   });
-
 }
 ```
 
