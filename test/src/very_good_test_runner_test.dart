@@ -24,6 +24,117 @@ class MockTestProcess extends Mock implements TestProcess {}
 class MockProcess extends Mock implements Process {}
 
 void main() {
+  group('dartTest', () {
+    late StreamController<List<int>> stdoutController;
+    late StreamController<List<int>> stderrController;
+    late Process process;
+    late TestProcess testProcess;
+
+    setUp(() {
+      stdoutController = StreamController();
+      stderrController = StreamController();
+      process = MockProcess();
+      testProcess = MockTestProcess();
+      when(
+        () => testProcess.start(
+          any(),
+          any(),
+          workingDirectory: any(named: 'workingDirectory'),
+          environment: any(named: 'environment'),
+          includeParentEnvironment: any(named: 'includeParentEnvironment'),
+          runInShell: any(named: 'runInShell'),
+        ),
+      ).thenAnswer((_) async => process);
+      when(() => process.stdout).thenAnswer((_) => stdoutController.stream);
+      when(() => process.stderr).thenAnswer((_) => stderrController.stream);
+      when(process.kill).thenReturn(true);
+    });
+
+    test('passes correct parameters to Process.start', () async {
+      final events = <TestEvent>[];
+      const arguments = ['--no-pub'];
+      const environment = {'foo': 'bar'};
+      const workingDirectory = './path/to/tests';
+      const runInShell = true;
+      final testEvents = dartTest(
+        arguments: arguments,
+        environment: environment,
+        workingDirectory: workingDirectory,
+        startProcess: testProcess.start,
+        runInShell: runInShell,
+      );
+      final subscription = testEvents.listen(events.add);
+      await stdoutController.close();
+      expect(events, isEmpty);
+      verify(
+        () => testProcess.start(
+          'dart',
+          ['test', ...arguments, '--reporter=json', '--chain-stack-traces'],
+          workingDirectory: workingDirectory,
+          environment: environment,
+          runInShell: runInShell,
+        ),
+      ).called(1);
+      unawaited(subscription.cancel());
+    });
+
+    test('emits error from stderr', () async {
+      const expectedError = 'oops';
+      final events = <TestEvent>[];
+      final errors = <String>[];
+      final testEvents = dartTest(startProcess: testProcess.start);
+      final subscription = testEvents.listen(events.add, onError: errors.add);
+      stderrController.add(utf8.encode(expectedError));
+      await stdoutController.close();
+      expect(events, isEmpty);
+      expect(errors, equals([expectedError]));
+      unawaited(subscription.cancel());
+    });
+
+    test('kills process when subscription is canceled', () async {
+      final events = <TestEvent>[];
+      final testEvents = dartTest(startProcess: testProcess.start);
+      final subscription = testEvents.listen(events.add);
+      await subscription.cancel();
+      verify(process.kill).called(1);
+    });
+
+    test('emits correctly (e2e)', () async {
+      final tempDirectory = Directory.systemTemp.createTempSync();
+      File('${tempDirectory.path}/pubspec.yaml').writeAsStringSync(
+        '''
+name: example
+version: 0.1.0+1
+
+environment:
+  sdk: ">=2.12.0 <3.0.0"
+
+dev_dependencies:
+  test: any
+''',
+      );
+      final testDirectory = Directory('${tempDirectory.path}/test')
+        ..createSync();
+      File('${testDirectory.path}/example_test.dart').writeAsStringSync(
+        '''
+import 'package:test/test.dart';
+
+void main() {
+  test('example', () {
+    expect(true, isTrue);
+  });
+}
+''',
+      );
+      expect(
+        dartTest(workingDirectory: tempDirectory.path)
+            .where((e) => e is DoneTestEvent)
+            .first,
+        completes,
+      );
+    });
+  });
+
   group('flutterTest', () {
     late StreamController<List<int>> stdoutController;
     late StreamController<List<int>> stderrController;

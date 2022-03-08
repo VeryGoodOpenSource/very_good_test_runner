@@ -15,6 +15,38 @@ typedef StartProcess = Future<Process> Function(
   ProcessStartMode mode,
 });
 
+/// Runs `dart test` and returns a stream of [TestEvent]
+/// reported by the process.
+///
+/// ```dart
+/// void main() {
+///   // React to `TestEvent` instances.
+///   dartTest().listen(print);
+/// }
+/// ```
+Stream<TestEvent> dartTest({
+  List<String>? arguments,
+  String? workingDirectory,
+  Map<String, String>? environment,
+  bool runInShell = false,
+  StartProcess startProcess = Process.start,
+}) {
+  return _runTestProcess(
+    () => startProcess(
+      'dart',
+      [
+        'test',
+        ...?arguments,
+        '--reporter=json',
+        '--chain-stack-traces',
+      ],
+      environment: environment,
+      workingDirectory: workingDirectory,
+      runInShell: runInShell,
+    ),
+  );
+}
+
 /// Runs `flutter test` and returns a stream of [TestEvent]
 /// reported by the process.
 ///
@@ -31,19 +63,27 @@ Stream<TestEvent> flutterTest({
   bool runInShell = false,
   StartProcess startProcess = Process.start,
 }) {
+  return _runTestProcess(
+    () => startProcess(
+      'flutter',
+      ['test', ...?arguments, '--reporter=json'],
+      environment: environment,
+      workingDirectory: workingDirectory,
+      runInShell: runInShell,
+    ),
+  );
+}
+
+Stream<TestEvent> _runTestProcess(
+  Future<Process> Function() processRunner,
+) {
   final controller = StreamController<TestEvent>();
   late StreamSubscription testEventSubscription;
   late StreamSubscription errorSubscription;
   late Future<Process> processFuture;
 
   Future<void> _onListen() async {
-    processFuture = startProcess(
-      'flutter',
-      ['test', ...?arguments, '--reporter=json'],
-      environment: environment,
-      workingDirectory: workingDirectory,
-      runInShell: runInShell,
-    );
+    processFuture = processRunner();
     final process = await processFuture;
     final errors = process.stderr.map((e) => utf8.decode(e).trim());
     final testEvents = process.stdout.mapToTestEvents();
