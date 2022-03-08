@@ -15,4 +15,5 @@ on:
 jobs:
   build:
     uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/flutter_package.yml@v1
-    flutter_version: 2.10.3
+    with:
+      flutter_version: 2.10.3
