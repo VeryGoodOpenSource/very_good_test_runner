@@ -13,6 +13,20 @@ Developed with 💙 by [Very Good Ventures][very_good_ventures_link] 🦄
 
 A test runner for Flutter and Dart created by Very Good Ventures.
 
+## Usage
+
+```dart
+import 'package:very_good_test_runner/very_good_test_runner.dart';
+
+void main() {
+  flutterTest(workingDirectory: 'path/to/project').listen((TestEvent event) {
+    // React to `TestEvent` instances.
+    // See https://github.com/dart-lang/test/blob/master/pkgs/test/doc/json_reporter.md#json-reporter-protocol
+    print(event);
+  });
+}
+```
+
 [ci_badge]: https://github.com/VeryGoodOpenSource/very_good_test_runner/workflows/very_good_test_runner/badge.svg
 [ci_link]: https://github.com/VeryGoodOpenSource/very_good_test_runner/actions
 [coverage_badge]: https://raw.githubusercontent.com/VeryGoodOpenSource/very_good_test_runner/main/coverage_badge.svg

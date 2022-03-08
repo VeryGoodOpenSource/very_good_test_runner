@@ -17,6 +17,13 @@ typedef StartProcess = Future<Process> Function(
 
 /// Runs `flutter test` and returns a stream of [TestEvent]
 /// reported by the process.
+///
+/// ```dart
+/// void main() {
+///   // React to `TestEvent` instances.
+///   flutterTest().listen(print);
+/// }
+/// ```
 Stream<TestEvent> flutterTest({
   List<String>? arguments,
   String? workingDirectory,
@@ -39,7 +46,7 @@ Stream<TestEvent> flutterTest({
     );
     final process = await processFuture;
     final errors = process.stderr.map((e) => utf8.decode(e).trim());
-    final testEvents = process.stdout.asTestEvents();
+    final testEvents = process.stdout.mapToTestEvents();
     errorSubscription = errors.listen(controller.addError);
     testEventSubscription = testEvents.listen(
       controller.add,
@@ -63,7 +70,7 @@ Stream<TestEvent> flutterTest({
 }
 
 extension on Stream<List<int>> {
-  Stream<TestEvent> asTestEvents() {
+  Stream<TestEvent> mapToTestEvents() {
     return map(utf8.decode)
         .expand<String>((msg) sync* {
           for (final value in msg.split('\n')) {
