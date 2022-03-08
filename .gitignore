@@ -8,3 +8,4 @@ pubspec.lock
 
 # Files related to tests
 coverage/
+.test_coverage.dart
