@@ -15,6 +15,33 @@ typedef StartProcess = Future<Process> Function(
   ProcessStartMode mode,
 });
 
+/// Runs `dart test` and returns a stream of [TestEvent]
+/// reported by the process.
+///
+/// ```dart
+/// void main() {
+///   // React to `TestEvent` instances.
+///   dartTest().listen(print);
+/// }
+/// ```
+Stream<TestEvent> dartTest({
+  List<String>? arguments,
+  String? workingDirectory,
+  Map<String, String>? environment,
+  bool runInShell = false,
+  StartProcess startProcess = Process.start,
+}) {
+  return _runTestProcess(
+    () => startProcess(
+      'dart',
+      ['test', ...?arguments, '--reporter=json'],
+      environment: environment,
+      workingDirectory: workingDirectory,
+      runInShell: runInShell,
+    ),
+  );
+}
+
 /// Runs `flutter test` and returns a stream of [TestEvent]
 /// reported by the process.
 ///
@@ -31,19 +58,27 @@ Stream<TestEvent> flutterTest({
   bool runInShell = false,
   StartProcess startProcess = Process.start,
 }) {
+  return _runTestProcess(
+    () => startProcess(
+      'flutter',
+      ['test', ...?arguments, '--reporter=json'],
+      environment: environment,
+      workingDirectory: workingDirectory,
+      runInShell: runInShell,
+    ),
+  );
+}
+
+Stream<TestEvent> _runTestProcess(
+  Future<Process> Function() processRunner,
+) {
   final controller = StreamController<TestEvent>();
   late StreamSubscription testEventSubscription;
   late StreamSubscription errorSubscription;
   late Future<Process> processFuture;
 
   Future<void> _onListen() async {
-    processFuture = startProcess(
-      'flutter',
-      ['test', ...?arguments, '--reporter=json'],
-      environment: environment,
-      workingDirectory: workingDirectory,
-      runInShell: runInShell,
-    );
+    processFuture = processRunner();
     final process = await processFuture;
     final errors = process.stderr.map((e) => utf8.decode(e).trim());
     final testEvents = process.stdout.mapToTestEvents();
@@ -72,20 +107,24 @@ Stream<TestEvent> flutterTest({
 extension on Stream<List<int>> {
   Stream<TestEvent> mapToTestEvents() {
     return map(utf8.decode)
-        .expand<String>((msg) sync* {
-          for (final value in msg.split('\n')) {
-            final trimmedValue = value.trim();
-            if (trimmedValue.isNotEmpty) yield trimmedValue;
-          }
-        })
-        .expand<Object?>((j) {
-          try {
-            return [json.decode(j)];
-          } on FormatException {
-            return [];
-          }
-        })
-        .cast<Map<Object?, Object?>>()
-        .map((json) => TestEvent.fromJson(Map<String, dynamic>.from(json)));
+        .expand<String>(_splitLines)
+        .map<Map<String, Object?>>(_tryDecode)
+        .where((value) => value.isNotEmpty)
+        .map(TestEvent.fromJson);
+  }
+
+  Iterable<String> _splitLines(String content) sync* {
+    for (final line in content.split('\n')) {
+      yield line.trim();
+    }
+  }
+
+  Map<String, Object?> _tryDecode(String value) {
+    try {
+      if (value.isEmpty) return const {};
+      return json.decode(value) as Map<String, Object?>;
+    } on FormatException {
+      return const {};
+    }
   }
 }

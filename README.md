@@ -19,9 +19,15 @@ A test runner for Flutter and Dart created by Very Good Ventures.
 import 'package:very_good_test_runner/very_good_test_runner.dart';
 
 void main() {
+  // Run `dart test` in `path/to/project`.
+  dartTest(workingDirectory: 'path/to/project').listen((TestEvent event) {
+    // React to `TestEvent` instances.
+    print(event);
+  });
+
+  // Run `flutter test` in `path/to/project`.
   flutterTest(workingDirectory: 'path/to/project').listen((TestEvent event) {
     // React to `TestEvent` instances.
-    // See https://github.com/dart-lang/test/blob/master/pkgs/test/doc/json_reporter.md#json-reporter-protocol
     print(event);
   });
 }
