@@ -1,4 +1,10 @@
-# 0.1.0 (2022-03-09)
+# [0.1.1](https://github.com/VeryGoodOpenSource/very_good_test_runner/compare/v0.1.0...v0.1.1) (2022-03-09)
+
+### Bug Fixes
+
+- README logo order ([aaba957](https://github.com/VeryGoodOpenSource/very_good_test_runner/commit/aaba957d3bc6739e7d7314cdb8a0dd1fae5e696d))
+
+# [0.1.0](https://github.com/VeryGoodOpenSource/very_good_test_runner/compare/3001cef12ee5fb5c52a1652ff24209037a225ece...v0.1.0) (2022-03-09)
 
 ### Features
 
