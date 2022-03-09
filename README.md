@@ -11,7 +11,7 @@ Developed with 💙 by [Very Good Ventures][very_good_ventures_link] 🦄
 [![style: very good analysis][very_good_analysis_badge]][very_good_analysis_link]
 [![License: MIT][license_badge]][license_link]
 
-A test runner for Flutter and Dart created by Very Good Ventures.
+A test runner for Flutter and Dart created by Very Good Ventures. This package is intended to be used when writing custom tooling that runs Flutter or Dart tests and exposes a Stream of `TestEvent` instances. For more information about the various `TestEvent` types, refer to the [JSON Reporter Test Protocol][json_reporter_test_protocol_link].
 
 ## Usage
 
@@ -19,14 +19,22 @@ A test runner for Flutter and Dart created by Very Good Ventures.
 import 'package:very_good_test_runner/very_good_test_runner.dart';
 
 void main() {
+  const arguments = ['--coverage'];
+  const workingDirectory = 'path/to/project';
   // Run `dart test` in `path/to/project`.
-  dartTest(workingDirectory: 'path/to/project').listen((TestEvent event) {
+  dartTest(
+    arguments: arguments,
+    workingDirectory: workingDirectory,
+  ).listen((TestEvent event) {
     // React to `TestEvent` instances.
     print(event);
   });
 
   // Run `flutter test` in `path/to/project`.
-  flutterTest(workingDirectory: 'path/to/project').listen((TestEvent event) {
+  flutterTest(
+    arguments: arguments,
+    workingDirectory: workingDirectory,
+  ).listen((TestEvent event) {
     // React to `TestEvent` instances.
     print(event);
   });
@@ -36,6 +44,7 @@ void main() {
 [ci_badge]: https://github.com/VeryGoodOpenSource/very_good_test_runner/workflows/very_good_test_runner/badge.svg
 [ci_link]: https://github.com/VeryGoodOpenSource/very_good_test_runner/actions
 [coverage_badge]: https://raw.githubusercontent.com/VeryGoodOpenSource/very_good_test_runner/main/coverage_badge.svg
+[json_reporter_test_protocol_link]: https://github.com/dart-lang/test/blob/master/pkgs/test/doc/json_reporter.md
 [license_badge]: https://img.shields.io/badge/license-MIT-blue.svg
 [license_link]: https://opensource.org/licenses/MIT
 [logo_black]: https://raw.githubusercontent.com/VGVentures/very_good_brand/main/styles/README/vgv_logo_black.png#gh-light-mode-only
