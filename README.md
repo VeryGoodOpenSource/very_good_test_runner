@@ -21,7 +21,8 @@ import 'package:very_good_test_runner/very_good_test_runner.dart';
 void main() {
   const arguments = ['--coverage'];
   const workingDirectory = 'path/to/project';
-  // Run `dart test` in `path/to/project`.
+
+  // Run `dart test` process.
   dartTest(
     arguments: arguments,
     workingDirectory: workingDirectory,
@@ -30,7 +31,7 @@ void main() {
     print(event);
   });
 
-  // Run `flutter test` in `path/to/project`.
+  // Run `flutter test` process.
   flutterTest(
     arguments: arguments,
     workingDirectory: workingDirectory,
