@@ -11,7 +11,7 @@ Developed with 💙 by [Very Good Ventures][very_good_ventures_link] 🦄
 [![style: very good analysis][very_good_analysis_badge]][very_good_analysis_link]
 [![License: MIT][license_badge]][license_link]
 
-A test runner for Flutter and Dart created by Very Good Ventures. This package is intended to be used when writing custom tooling that runs Flutter or Dart tests and exposes a Stream of `TestEvent` instances. For more information about the various `TestEvent` types, refer to the [JSON Reporter Test Protocol][json_reporter_test_protocol_link].
+This package is a test runner for Flutter and Dart created by Very Good Ventures. It is intended to be used when writing custom tooling that runs Flutter or Dart tests and exposes a stream of `TestEvent` instances. For more information about the various `TestEvent` types, refer to the [JSON Reporter Test Protocol][json_reporter_test_protocol_link].
 
 ## Usage
 
