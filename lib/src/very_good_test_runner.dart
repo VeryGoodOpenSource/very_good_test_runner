@@ -78,6 +78,7 @@ Stream<TestEvent> _runTestProcess(
   late Future<Process> processFuture;
 
   Future<void> _onListen() async {
+    final stopwatch = Stopwatch()..start();
     processFuture = processRunner();
     final process = await processFuture;
     final errors = process.stderr.map((e) => utf8.decode(e).trim());
@@ -86,8 +87,22 @@ Stream<TestEvent> _runTestProcess(
     testEventSubscription = testEvents.listen(
       controller.add,
       onError: controller.addError,
-      onDone: controller.close,
     );
+
+    final exitCode = await process.exitCode;
+    stopwatch.stop();
+    await Future.wait([
+      errorSubscription.cancel(),
+      testEventSubscription.cancel(),
+    ]);
+    if (controller.isClosed) return;
+    controller.add(
+      ExitTestEvent(
+        time: stopwatch.elapsedMilliseconds,
+        exitCode: exitCode,
+      ),
+    );
+    await controller.close();
   }
 
   Future<void> _onCancel() async {

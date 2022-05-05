@@ -47,6 +47,7 @@ void main() {
       ).thenAnswer((_) async => process);
       when(() => process.stdout).thenAnswer((_) => stdoutController.stream);
       when(() => process.stderr).thenAnswer((_) => stderrController.stream);
+      when(() => process.exitCode).thenAnswer((_) async => 0);
       when(process.kill).thenReturn(true);
     });
 
@@ -158,6 +159,7 @@ void main() {
       ).thenAnswer((_) async => process);
       when(() => process.stdout).thenAnswer((_) => stdoutController.stream);
       when(() => process.stderr).thenAnswer((_) => stderrController.stream);
+      when(() => process.exitCode).thenAnswer((_) async => 0);
       when(process.kill).thenReturn(true);
     });
 
@@ -246,6 +248,8 @@ void main() {
     });
 
     test('emits correct stream of TestEvents', () async {
+      final completer = Completer<int>();
+      when(() => process.exitCode).thenAnswer((_) => completer.future);
       final rawEvents = [
         {
           'protocolVersion': '0.1.1',
@@ -740,7 +744,6 @@ void main() {
         (element) => utf8.encode(json.encode(element)),
       );
       await stdoutController.addStream(Stream.fromIterable(encodedEvents));
-      await stdoutController.close();
       expect(
         events,
         equals([
@@ -788,6 +791,9 @@ void main() {
           isA<DoneTestEvent>(),
         ]),
       );
+      completer.complete(0);
+      await Future<void>.delayed(Duration.zero);
+      expect(events.last, isA<ExitTestEvent>());
       unawaited(subscription.cancel());
     });
   });
