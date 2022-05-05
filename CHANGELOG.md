@@ -1,4 +1,10 @@
-# [0.1.1](https://github.com/VeryGoodOpenSource/very_good_test_runner/compare/v0.1.0...v0.1.1) (2022-03-09)
+# [0.1.2](https://github.com/VeryGoodOpenSource/very_good_test_runner/compare/v0.1.1...v0.1.2) (2022-05-05)
+
+### Features
+
+- add ExitTestEvent to indicate the process has exited ([#6](https://github.com/VeryGoodOpenSource/very_good_test_runner/issues/6)) ([8f37fbd](https://github.com/VeryGoodOpenSource/very_good_test_runner/commit/8f37fbde9dafaef5702b75c8aad06e4fdca0d015))
+
+## [0.1.1](https://github.com/VeryGoodOpenSource/very_good_test_runner/compare/v0.1.0...v0.1.1) (2022-03-09)
 
 ### Bug Fixes
 
