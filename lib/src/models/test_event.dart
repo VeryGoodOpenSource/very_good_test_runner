@@ -36,6 +36,8 @@ abstract class TestEvent {
         return TestDoneEvent.fromJson(json);
       case 'done':
         return DoneTestEvent.fromJson(json);
+      case 'exit':
+        return ExitTestEvent.fromJson(json);
       default:
         throw UnsupportedError('Unsupported type: $type');
     }
@@ -329,6 +331,24 @@ class DoneTestEvent extends TestEvent {
   /// Will be `null` if the test runner was close before all tests completed
   /// running.
   final bool? success;
+}
+
+/// {@template test_exit_event}
+/// An event emitted when a test completes.
+/// The [exitCode] attribute indicates the result of the test process.
+/// {@endtemplate}
+@JsonSerializable()
+class ExitTestEvent extends TestEvent {
+  /// {@macro test_exit_event}
+  const ExitTestEvent({required int time, required this.exitCode})
+      : super(type: 'exit', time: time);
+
+  /// {@macro test_exit_event}
+  factory ExitTestEvent.fromJson(Map<String, dynamic> json) =>
+      _$ExitTestEventFromJson(json);
+
+  /// The exit code associated with the test process.
+  final int exitCode;
 }
 
 /// {@template test_suite}

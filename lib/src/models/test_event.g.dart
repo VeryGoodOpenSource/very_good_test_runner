@@ -162,6 +162,19 @@ DoneTestEvent _$DoneTestEventFromJson(Map<String, dynamic> json) =>
       },
     );
 
+ExitTestEvent _$ExitTestEventFromJson(Map<String, dynamic> json) =>
+    $checkedCreate(
+      'ExitTestEvent',
+      json,
+      ($checkedConvert) {
+        final val = ExitTestEvent(
+          time: $checkedConvert('time', (v) => v as int),
+          exitCode: $checkedConvert('exitCode', (v) => v as int),
+        );
+        return val;
+      },
+    );
+
 TestSuite _$TestSuiteFromJson(Map<String, dynamic> json) => $checkedCreate(
       'TestSuite',
       json,

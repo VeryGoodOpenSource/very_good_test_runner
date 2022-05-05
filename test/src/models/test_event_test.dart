@@ -143,6 +143,12 @@ void main() {
 
         expect(TestEvent.fromJson(json), isA<DoneTestEvent>());
       });
+
+      test('returns ExitTestEvent when type is exit', () {
+        final json = {'exitCode': 0, 'type': 'exit', 'time': 4034};
+
+        expect(TestEvent.fromJson(json), isA<ExitTestEvent>());
+      });
     });
   });
 }
