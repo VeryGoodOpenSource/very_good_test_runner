@@ -6,6 +6,9 @@
 build/
 pubspec.lock
 
+# Android Studio and IntelliJ
+.idea
+
 # Files related to tests
 coverage/
 .test_coverage.dart
