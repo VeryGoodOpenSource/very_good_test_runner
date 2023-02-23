@@ -63,8 +63,8 @@ class StartTestEvent extends TestEvent {
     required this.protocolVersion,
     required this.runnerVersion,
     required this.pid,
-    required int time,
-  }) : super(type: 'start', time: time);
+    required super.time,
+  }) : super(type: 'start');
 
   /// {@macro start_test_event}
   factory StartTestEvent.fromJson(Map<String, dynamic> json) =>
@@ -96,8 +96,8 @@ class AllSuitesTestEvent extends TestEvent {
   /// {@macro all_suites_test_event}
   const AllSuitesTestEvent({
     required this.count,
-    required int time,
-  }) : super(type: 'allSuites', time: time);
+    required super.time,
+  }) : super(type: 'allSuites');
 
   /// {@macro all_suites_test_event}
   factory AllSuitesTestEvent.fromJson(Map<String, dynamic> json) =>
@@ -118,8 +118,8 @@ class SuiteTestEvent extends TestEvent {
   /// {@macro suite_test_event}
   const SuiteTestEvent({
     required this.suite,
-    required int time,
-  }) : super(type: 'suite', time: time);
+    required super.time,
+  }) : super(type: 'suite');
 
   /// {@macro suite_test_event}
   factory SuiteTestEvent.fromJson(Map<String, dynamic> json) =>
@@ -141,8 +141,8 @@ class DebugTestEvent extends TestEvent {
     required this.suiteID,
     required this.observatory,
     required this.remoteDebugger,
-    required int time,
-  }) : super(type: 'debug', time: time);
+    required super.time,
+  }) : super(type: 'debug');
 
   /// {@macro debug_test_event}
   factory DebugTestEvent.fromJson(Map<String, dynamic> json) =>
@@ -171,8 +171,8 @@ class GroupTestEvent extends TestEvent {
   /// {@macro group_test_event}
   const GroupTestEvent({
     required this.group,
-    required int time,
-  }) : super(type: 'group', time: time);
+    required super.time,
+  }) : super(type: 'group');
 
   /// {@macro group_test_event}
   factory GroupTestEvent.fromJson(Map<String, dynamic> json) =>
@@ -192,8 +192,8 @@ class TestStartEvent extends TestEvent {
   /// {@macro test_start_event}
   const TestStartEvent({
     required this.test,
-    required int time,
-  }) : super(type: 'testStart', time: time);
+    required super.time,
+  }) : super(type: 'testStart');
 
   /// {@macro test_start_event}
   factory TestStartEvent.fromJson(Map<String, dynamic> json) =>
@@ -216,8 +216,8 @@ class MessageTestEvent extends TestEvent {
     required this.testID,
     required this.messageType,
     required this.message,
-    required int time,
-  }) : super(type: 'print', time: time);
+    required super.time,
+  }) : super(type: 'print');
 
   /// {@macro message_test_event}
   factory MessageTestEvent.fromJson(Map<String, dynamic> json) =>
@@ -246,8 +246,8 @@ class ErrorTestEvent extends TestEvent {
     required this.error,
     required this.stackTrace,
     required this.isFailure,
-    required int time,
-  }) : super(type: 'error', time: time);
+    required super.time,
+  }) : super(type: 'error');
 
   /// {@macro error_test_event}
   factory ErrorTestEvent.fromJson(Map<String, dynamic> json) =>
@@ -290,8 +290,8 @@ class TestDoneEvent extends TestEvent {
     required this.result,
     required this.hidden,
     required this.skipped,
-    required int time,
-  }) : super(type: 'testDone', time: time);
+    required super.time,
+  }) : super(type: 'testDone');
 
   /// {@macro test_done_event}
   factory TestDoneEvent.fromJson(Map<String, dynamic> json) =>
@@ -319,8 +319,8 @@ class DoneTestEvent extends TestEvent {
   /// {@macro done_test_event}
   const DoneTestEvent({
     required this.success,
-    required int time,
-  }) : super(type: 'done', time: time);
+    required super.time,
+  }) : super(type: 'done');
 
   /// {@macro done_test_event}
   factory DoneTestEvent.fromJson(Map<String, dynamic> json) =>
@@ -340,8 +340,8 @@ class DoneTestEvent extends TestEvent {
 @JsonSerializable()
 class ExitTestEvent extends TestEvent {
   /// {@macro test_exit_event}
-  const ExitTestEvent({required int time, required this.exitCode})
-      : super(type: 'exit', time: time);
+  const ExitTestEvent({required super.time, required this.exitCode})
+      : super(type: 'exit');
 
   /// {@macro test_exit_event}
   factory ExitTestEvent.fromJson(Map<String, dynamic> json) =>
@@ -398,12 +398,12 @@ class TestGroup {
     required this.id,
     required this.name,
     required this.suiteID,
-    this.parentID,
     required this.testCount,
+    required this.metadata,
+    this.parentID,
     this.line,
     this.column,
     this.url,
-    required this.metadata,
   });
 
   /// {@macro test_group}
@@ -470,13 +470,13 @@ class Test {
     required this.name,
     required this.suiteID,
     required this.groupIDs,
+    required this.metadata,
     this.line,
     this.column,
     this.url,
     this.rootLine,
     this.rootColumn,
     this.rootUrl,
-    required this.metadata,
   });
 
   /// {@macro test}
