@@ -16,7 +16,16 @@ jobs:
   semantic-pull-request:
     uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/semantic_pull_request.yml@v1
 
+  spell-check:
+    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/spell_check.yml@v1
+    with:
+      includes: "**/*.md"
+      modified_files_only: false
+
   build:
     uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/flutter_package.yml@v1
     with:
       flutter_version: 2.10.3
+
+  pana_score:
+    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/pana.yml@v1
