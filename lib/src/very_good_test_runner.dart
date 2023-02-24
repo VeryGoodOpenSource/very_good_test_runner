@@ -73,11 +73,11 @@ Stream<TestEvent> _runTestProcess(
   Future<Process> Function() processRunner,
 ) {
   final controller = StreamController<TestEvent>();
-  late StreamSubscription testEventSubscription;
-  late StreamSubscription errorSubscription;
+  late StreamSubscription<dynamic> testEventSubscription;
+  late StreamSubscription<dynamic> errorSubscription;
   late Future<Process> processFuture;
 
-  Future<void> _onListen() async {
+  Future<void> onListen() async {
     final stopwatch = Stopwatch()..start();
     processFuture = processRunner();
     final process = await processFuture;
@@ -105,7 +105,7 @@ Stream<TestEvent> _runTestProcess(
     await controller.close();
   }
 
-  Future<void> _onCancel() async {
+  Future<void> onCancel() async {
     await controller.close();
     (await processFuture).kill();
     await errorSubscription.cancel();
@@ -113,8 +113,8 @@ Stream<TestEvent> _runTestProcess(
   }
 
   controller
-    ..onListen = _onListen
-    ..onCancel = _onCancel;
+    ..onListen = onListen
+    ..onCancel = onCancel;
 
   return controller.stream;
 }
