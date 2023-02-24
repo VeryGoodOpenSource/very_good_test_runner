@@ -14,7 +14,5 @@
       "description": "Forbidden VGV Spellings"
     }
   ],
-  "useGitignore": true,
-  "words": [
-  ]
+  "useGitignore": true
 }
