@@ -25,7 +25,7 @@ jobs:
   build:
     uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/flutter_package.yml@v1
     with:
-      flutter_version: 3.7.3
+      flutter_version: 3.16.0
 
   pana_score:
     uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/pana.yml@v1
