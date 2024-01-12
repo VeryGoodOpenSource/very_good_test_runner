@@ -15,10 +15,10 @@ jobs:
   build:
     strategy:
       matrix:
-        dart-sdk:
-          - "3.0.0" # The minimum Dart SDK version supported by the package.
+        flutter-version:
+          - "3.10.0" # The minimum Dart SDK version supported by the package.
           - "stable"
 
-    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/dart_package.yml@v1
+    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/pana.yml@v1
     with:
-      dart_sdk: ${{ matrix.flutter-version }}
+      flutter-version: ${{ matrix.flutter-version }}
