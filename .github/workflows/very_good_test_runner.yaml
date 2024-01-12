@@ -1,5 +1,4 @@
-name: very_good_infinite_list
-
+name: very_good_test_runner
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
