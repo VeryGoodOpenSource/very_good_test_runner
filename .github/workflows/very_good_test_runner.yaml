@@ -1,0 +1,25 @@
+name: very_good_infinite_list
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        dart-sdk:
+          - "3.0.0" # The minimum Dart SDK version supported by the package.
+          - "stable"
+
+    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/dart_package.yml@v1
+    with:
+      dart_sdk: ${{ matrix.flutter-version }}
