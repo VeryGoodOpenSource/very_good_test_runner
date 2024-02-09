@@ -23,7 +23,7 @@ void main() {
           'runnerVersion': '1.19.5',
           'pid': 67090,
           'type': 'start',
-          'time': 0
+          'time': 0,
         };
         expect(TestEvent.fromJson(json), isA<StartTestEvent>());
       });
@@ -33,10 +33,10 @@ void main() {
           'suite': {
             'id': 0,
             'platform': 'vm',
-            'path': '/example/test/app/view/app_test.dart'
+            'path': '/example/test/app/view/app_test.dart',
           },
           'type': 'suite',
-          'time': 0
+          'time': 0,
         };
         expect(TestEvent.fromJson(json), isA<SuiteTestEvent>());
       });
@@ -52,10 +52,10 @@ void main() {
             'testCount': 1,
             'line': null,
             'column': null,
-            'url': null
+            'url': null,
           },
           'type': 'group',
-          'time': 2599
+          'time': 2599,
         };
 
         expect(TestEvent.fromJson(json), isA<GroupTestEvent>());
@@ -71,10 +71,10 @@ void main() {
             'metadata': {'skip': false, 'skipReason': null},
             'line': null,
             'column': null,
-            'url': null
+            'url': null,
           },
           'type': 'testStart',
-          'time': 1
+          'time': 1,
         };
 
         expect(TestEvent.fromJson(json), isA<TestStartEvent>());
@@ -94,7 +94,7 @@ void main() {
           'stackTrace': '',
           'isFailure': false,
           'type': 'error',
-          'time': 3288
+          'time': 3288,
         };
 
         expect(TestEvent.fromJson(json), isA<ErrorTestEvent>());
@@ -107,7 +107,7 @@ void main() {
           'message':
               '''══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════\nThe following TestFailure was thrown running a test:\nExpected: no matching nodes in the widget tree\n  Actual: _WidgetTypeFinder:<exactly one widget with type 'CounterPage' (ignoring offstage widgets):\nCounterPage>\n   Which: means one was found but none were expected\n\nWhen the exception was thrown, this was the stack:\n#4      main.<anonymous closure>.<anonymous closure> (file:///example/test/app/view/app_test.dart:16:7)\n<asynchronous suspension>\n<asynchronous suspension>\n(elided one frame from package:stack_trace)\n\nThis was caught by the test expectation on the following line:\n  file:///example/test/app/view/app_test.dart line 16\nThe test description was:\n  renders CounterPage\n════════════════════════════════════════════════════════════════════════════════════════════════════''',
           'type': 'print',
-          'time': 3284
+          'time': 3284,
         };
 
         expect(TestEvent.fromJson(json), isA<MessageTestEvent>());
@@ -119,7 +119,7 @@ void main() {
           'type': 'debug',
           'observatory': null,
           'remoteDebugger': null,
-          'time': 3288
+          'time': 3288,
         };
 
         expect(TestEvent.fromJson(json), isA<DebugTestEvent>());
@@ -132,7 +132,7 @@ void main() {
           'skipped': false,
           'hidden': true,
           'type': 'testDone',
-          'time': 2593
+          'time': 2593,
         };
 
         expect(TestEvent.fromJson(json), isA<TestDoneEvent>());

@@ -228,7 +228,7 @@ dev_dependencies:
       );
       final testDirectory = Directory('${tempDirectory.path}/test')
         ..createSync();
-      File('${testDirectory.path}/example_test.dart').writeAsStringSync(
+      File('${testDirectory.path}/example_a[1]_test.dart').writeAsStringSync(
         '''
 import 'package:test/test.dart';
 
@@ -256,16 +256,17 @@ void main() {
           'runnerVersion': '1.20.1',
           'pid': 80881,
           'type': 'start',
-          'time': 0
+          'time': 0,
         },
         {
           'suite': {
             'id': 0,
             'platform': 'vm',
-            'path': 'very_good_test_runner/test/src/models/test_event_test.dart'
+            'path':
+                'very_good_test_runner/test/src/models/test_event_test.dart',
           },
           'type': 'suite',
-          'time': 0
+          'time': 0,
         },
         {
           'test': {
@@ -277,20 +278,20 @@ void main() {
             'metadata': {'skip': false, 'skipReason': null},
             'line': null,
             'column': null,
-            'url': null
+            'url': null,
           },
           'type': 'testStart',
-          'time': 1
+          'time': 1,
         },
         {
           'suite': {
             'id': 2,
             'platform': 'vm',
             'path':
-                'very_good_test_runner/test/src/flutter_test_runner_test.dart'
+                'very_good_test_runner/test/src/flutter_test_runner_test.dart',
           },
           'type': 'suite',
-          'time': 10
+          'time': 10,
         },
         {
           'test': {
@@ -302,10 +303,10 @@ void main() {
             'metadata': {'skip': false, 'skipReason': null},
             'line': null,
             'column': null,
-            'url': null
+            'url': null,
           },
           'type': 'testStart',
-          'time': 11
+          'time': 11,
         },
         {'count': 2, 'time': 11, 'type': 'allSuites'},
         {
@@ -314,7 +315,7 @@ void main() {
           'skipped': false,
           'hidden': true,
           'type': 'testDone',
-          'time': 1058
+          'time': 1058,
         },
         {
           'group': {
@@ -326,10 +327,10 @@ void main() {
             'testCount': 11,
             'line': null,
             'column': null,
-            'url': null
+            'url': null,
           },
           'type': 'group',
-          'time': 1064
+          'time': 1064,
         },
         {
           'group': {
@@ -342,10 +343,10 @@ void main() {
             'line': 5,
             'column': 3,
             'url':
-                'file://very_good_test_runner/test/src/models/test_event_test.dart'
+                'file://very_good_test_runner/test/src/models/test_event_test.dart',
           },
           'type': 'group',
-          'time': 1066
+          'time': 1066,
         },
         {
           'group': {
@@ -358,10 +359,10 @@ void main() {
             'line': 6,
             'column': 5,
             'url':
-                'file://very_good_test_runner/test/src/models/test_event_test.dart'
+                'file://very_good_test_runner/test/src/models/test_event_test.dart',
           },
           'type': 'group',
-          'time': 1067
+          'time': 1067,
         },
         {
           'test': {
@@ -374,10 +375,10 @@ void main() {
             'line': 7,
             'column': 7,
             'url':
-                'file://very_good_test_runner/test/src/models/test_event_test.dart'
+                'file://very_good_test_runner/test/src/models/test_event_test.dart',
           },
           'type': 'testStart',
-          'time': 1067
+          'time': 1067,
         },
         {
           'testID': 3,
@@ -385,7 +386,7 @@ void main() {
           'skipped': false,
           'hidden': true,
           'type': 'testDone',
-          'time': 1074
+          'time': 1074,
         },
         {
           'group': {
@@ -397,10 +398,10 @@ void main() {
             'testCount': 3,
             'line': null,
             'column': null,
-            'url': null
+            'url': null,
           },
           'type': 'group',
-          'time': 1074
+          'time': 1074,
         },
         {
           'group': {
@@ -413,10 +414,10 @@ void main() {
             'line': 27,
             'column': 3,
             'url':
-                'file://very_good_test_runner/test/src/flutter_test_runner_test.dart'
+                'file://very_good_test_runner/test/src/flutter_test_runner_test.dart',
           },
           'type': 'group',
-          'time': 1074
+          'time': 1074,
         },
         {
           'test': {
@@ -428,10 +429,10 @@ void main() {
             'line': 53,
             'column': 5,
             'url':
-                'file://very_good_test_runner/test/src/flutter_test_runner_test.dart'
+                'file://very_good_test_runner/test/src/flutter_test_runner_test.dart',
           },
           'type': 'testStart',
-          'time': 1075
+          'time': 1075,
         },
         {
           'testID': 7,
@@ -439,7 +440,7 @@ void main() {
           'skipped': false,
           'hidden': false,
           'type': 'testDone',
-          'time': 1125
+          'time': 1125,
         },
         {
           'test': {
@@ -452,10 +453,10 @@ void main() {
             'line': 20,
             'column': 7,
             'url':
-                'file://very_good_test_runner/test/src/models/test_event_test.dart'
+                'file://very_good_test_runner/test/src/models/test_event_test.dart',
           },
           'type': 'testStart',
-          'time': 1125
+          'time': 1125,
         },
         {
           'testID': 11,
@@ -463,7 +464,7 @@ void main() {
           'skipped': false,
           'hidden': false,
           'type': 'testDone',
-          'time': 1132
+          'time': 1132,
         },
         {
           'test': {
@@ -476,10 +477,10 @@ void main() {
             'line': 31,
             'column': 7,
             'url':
-                'file://very_good_test_runner/test/src/models/test_event_test.dart'
+                'file://very_good_test_runner/test/src/models/test_event_test.dart',
           },
           'type': 'testStart',
-          'time': 1133
+          'time': 1133,
         },
         {
           'testID': 12,
@@ -487,7 +488,7 @@ void main() {
           'skipped': false,
           'hidden': false,
           'type': 'testDone',
-          'time': 1138
+          'time': 1138,
         },
         {
           'test': {
@@ -500,10 +501,10 @@ void main() {
             'line': 44,
             'column': 7,
             'url':
-                'file://very_good_test_runner/test/src/models/test_event_test.dart'
+                'file://very_good_test_runner/test/src/models/test_event_test.dart',
           },
           'type': 'testStart',
-          'time': 1139
+          'time': 1139,
         },
         {
           'testID': 13,
@@ -511,7 +512,7 @@ void main() {
           'skipped': false,
           'hidden': false,
           'type': 'testDone',
-          'time': 1148
+          'time': 1148,
         },
         {
           'test': {
@@ -524,10 +525,10 @@ void main() {
             'line': 64,
             'column': 7,
             'url':
-                'file://very_good_test_runner/test/src/models/test_event_test.dart'
+                'file://very_good_test_runner/test/src/models/test_event_test.dart',
           },
           'type': 'testStart',
-          'time': 1148
+          'time': 1148,
         },
         {
           'testID': 14,
@@ -535,7 +536,7 @@ void main() {
           'skipped': false,
           'hidden': false,
           'type': 'testDone',
-          'time': 1155
+          'time': 1155,
         },
         {
           'test': {
@@ -548,10 +549,10 @@ void main() {
             'line': 83,
             'column': 7,
             'url':
-                'file://very_good_test_runner/test/src/models/test_event_test.dart'
+                'file://very_good_test_runner/test/src/models/test_event_test.dart',
           },
           'type': 'testStart',
-          'time': 1155
+          'time': 1155,
         },
         {
           'testID': 15,
@@ -559,7 +560,7 @@ void main() {
           'skipped': false,
           'hidden': false,
           'type': 'testDone',
-          'time': 1160
+          'time': 1160,
         },
         {
           'test': {
@@ -572,10 +573,10 @@ void main() {
             'line': 89,
             'column': 7,
             'url':
-                'file://very_good_test_runner/test/src/models/test_event_test.dart'
+                'file://very_good_test_runner/test/src/models/test_event_test.dart',
           },
           'type': 'testStart',
-          'time': 1160
+          'time': 1160,
         },
         {
           'testID': 16,
@@ -583,7 +584,7 @@ void main() {
           'skipped': false,
           'hidden': false,
           'type': 'testDone',
-          'time': 1167
+          'time': 1167,
         },
         {
           'test': {
@@ -596,10 +597,10 @@ void main() {
             'line': 103,
             'column': 7,
             'url':
-                'file://very_good_test_runner/test/src/models/test_event_test.dart'
+                'file://very_good_test_runner/test/src/models/test_event_test.dart',
           },
           'type': 'testStart',
-          'time': 1168
+          'time': 1168,
         },
         {
           'testID': 17,
@@ -607,7 +608,7 @@ void main() {
           'skipped': false,
           'hidden': false,
           'type': 'testDone',
-          'time': 1176
+          'time': 1176,
         },
         {
           'test': {
@@ -620,10 +621,10 @@ void main() {
             'line': 116,
             'column': 7,
             'url':
-                'file://very_good_test_runner/test/src/models/test_event_test.dart'
+                'file://very_good_test_runner/test/src/models/test_event_test.dart',
           },
           'type': 'testStart',
-          'time': 1176
+          'time': 1176,
         },
         {
           'testID': 10,
@@ -631,7 +632,7 @@ void main() {
           'skipped': false,
           'hidden': false,
           'type': 'testDone',
-          'time': 1179
+          'time': 1179,
         },
         {
           'test': {
@@ -643,10 +644,10 @@ void main() {
             'line': 81,
             'column': 5,
             'url':
-                'file://very_good_test_runner/test/src/flutter_test_runner_test.dart'
+                'file://very_good_test_runner/test/src/flutter_test_runner_test.dart',
           },
           'type': 'testStart',
-          'time': 1179
+          'time': 1179,
         },
         {
           'testID': 18,
@@ -654,7 +655,7 @@ void main() {
           'skipped': false,
           'hidden': false,
           'type': 'testDone',
-          'time': 1183
+          'time': 1183,
         },
         {
           'test': {
@@ -667,10 +668,10 @@ void main() {
             'line': 128,
             'column': 7,
             'url':
-                'file://very_good_test_runner/test/src/models/test_event_test.dart'
+                'file://very_good_test_runner/test/src/models/test_event_test.dart',
           },
           'type': 'testStart',
-          'time': 1184
+          'time': 1184,
         },
         {
           'testID': 19,
@@ -678,7 +679,7 @@ void main() {
           'skipped': false,
           'hidden': false,
           'type': 'testDone',
-          'time': 1192
+          'time': 1192,
         },
         {
           'test': {
@@ -690,10 +691,10 @@ void main() {
             'line': 94,
             'column': 5,
             'url':
-                'file://very_good_test_runner/test/src/flutter_test_runner_test.dart'
+                'file://very_good_test_runner/test/src/flutter_test_runner_test.dart',
           },
           'type': 'testStart',
-          'time': 1192
+          'time': 1192,
         },
         {
           'testID': 20,
@@ -701,7 +702,7 @@ void main() {
           'skipped': false,
           'hidden': false,
           'type': 'testDone',
-          'time': 1193
+          'time': 1193,
         },
         {
           'test': {
@@ -714,10 +715,10 @@ void main() {
             'line': 141,
             'column': 7,
             'url':
-                'file://very_good_test_runner/test/src/models/test_event_test.dart'
+                'file://very_good_test_runner/test/src/models/test_event_test.dart',
           },
           'type': 'testStart',
-          'time': 1194
+          'time': 1194,
         },
         {
           'testID': 22,
@@ -725,7 +726,7 @@ void main() {
           'skipped': false,
           'hidden': false,
           'type': 'testDone',
-          'time': 1199
+          'time': 1199,
         },
         {
           'testID': 21,
@@ -733,7 +734,7 @@ void main() {
           'skipped': false,
           'hidden': false,
           'type': 'testDone',
-          'time': 1199
+          'time': 1199,
         },
         {'success': true, 'type': 'done', 'time': 1229},
       ];

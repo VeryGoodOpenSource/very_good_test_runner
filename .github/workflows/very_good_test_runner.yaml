@@ -1,0 +1,24 @@
+name: very_good_test_runner
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        flutter_version:
+          - "3.10.0" # The Flutter version with a Dart SDK that matches the minimum Dart SDK version supported by the package.
+          - "" # The latest stable version of Flutter.
+
+    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/flutter_package.yml@v1
+    with:
+      flutter_version: ${{ matrix.flutter_version }}
