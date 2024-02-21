@@ -1,3 +1,10 @@
+# 0.2.0
+
+- ci: use semantic-pull-request workflow ([#8](https://github.com/VeryGoodOpenSource/very_good_test_runner/pull/8))
+- ci: add dependabot ([#9](https://github.com/VeryGoodOpenSource/very_good_test_runner/pull/9))
+- feat!: update workflows, add spellcheck, update very_good_analysis ([#16](https://github.com/VeryGoodOpenSource/very_good_test_runner/pull/16))
+- feat!: Update Dart to 3.0.0 ([#20](https://github.com/VeryGoodOpenSource/very_good_test_runner/pull/20))
+
 # [0.1.2](https://github.com/VeryGoodOpenSource/very_good_test_runner/compare/v0.1.1...v0.1.2) (2022-05-05)
 
 ### Features
