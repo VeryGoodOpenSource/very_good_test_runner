@@ -16,7 +16,7 @@ jobs:
     strategy:
       matrix:
         flutter_version:
-          - "3.13.0" # The Flutter version with a Dart SDK that matches the minimum Dart SDK version supported by the package.
+          - "3.24.0" # The Flutter version with a Dart SDK that matches the minimum Dart SDK version supported by the package.
           - "3.x" # The Flutter version with a Dart SDK that matches the maximum Dart SDK version supported by the package.
 
     uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/flutter_package.yml@v1
