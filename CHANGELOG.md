@@ -1,3 +1,7 @@
+# 0.3.0 
+
+- chore: tighten dependencies ([#29](https://github.com/VeryGoodOpenSource/very_good_test_runner/pull/29))
+
 # 0.2.0
 
 - ci: use semantic-pull-request workflow ([#8](https://github.com/VeryGoodOpenSource/very_good_test_runner/pull/8))

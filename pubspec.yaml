@@ -1,7 +1,7 @@
 name: very_good_test_runner
 description: A test runner for Flutter and Dart created by Very Good Ventures
 homepage: https://github.com/VeryGoodOpenSource/very_good_test_runner
-version: 0.2.0
+version: 0.3.0
 
 environment:
   sdk: ^3.5.0
