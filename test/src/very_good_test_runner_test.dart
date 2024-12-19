@@ -6,6 +6,7 @@ import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
 import 'package:very_good_test_runner/very_good_test_runner.dart';
 
+// Needed for test setup
 // ignore: one_member_abstracts
 abstract class TestProcess {
   Future<Process> start(
