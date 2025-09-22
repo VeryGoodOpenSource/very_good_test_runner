@@ -4,8 +4,7 @@ import 'package:very_good_test_runner/very_good_test_runner.dart';
 void main() {
   group('TestEvent', () {
     group('fromJson', () {
-      test(
-          'throws UnsupportedError '
+      test('throws UnsupportedError '
           'when object is not a supported test event', () {
         expect(
           () => TestEvent.fromJson(<String, dynamic>{}),

@@ -263,7 +263,7 @@ enum TestResult {
   failure,
 
   /// the test had an error other than `TestFailure`
-  error
+  error,
 }
 
 /// {@template test_done_event}
@@ -329,7 +329,7 @@ class DoneTestEvent extends TestEvent {
 class ExitTestEvent extends TestEvent {
   /// {@macro test_exit_event}
   const ExitTestEvent({required super.time, required this.exitCode})
-      : super(type: 'exit');
+    : super(type: 'exit');
 
   /// {@macro test_exit_event}
   factory ExitTestEvent.fromJson(Map<String, dynamic> json) =>
