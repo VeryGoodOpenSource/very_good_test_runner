@@ -15,32 +15,20 @@ abstract class TestEvent {
   /// Converts [json] into a [TestEvent].
   static TestEvent fromJson(Map<String, dynamic> json) {
     final type = json['type'] as String?;
-    switch (type) {
-      case 'start':
-        return StartTestEvent.fromJson(json);
-      case 'allSuites':
-        return AllSuitesTestEvent.fromJson(json);
-      case 'suite':
-        return SuiteTestEvent.fromJson(json);
-      case 'debug':
-        return DebugTestEvent.fromJson(json);
-      case 'group':
-        return GroupTestEvent.fromJson(json);
-      case 'testStart':
-        return TestStartEvent.fromJson(json);
-      case 'print':
-        return MessageTestEvent.fromJson(json);
-      case 'error':
-        return ErrorTestEvent.fromJson(json);
-      case 'testDone':
-        return TestDoneEvent.fromJson(json);
-      case 'done':
-        return DoneTestEvent.fromJson(json);
-      case 'exit':
-        return ExitTestEvent.fromJson(json);
-      default:
-        throw UnsupportedError('Unsupported type: $type');
-    }
+    return switch (type) {
+      'start' => StartTestEvent.fromJson(json),
+      'allSuites' => AllSuitesTestEvent.fromJson(json),
+      'suite' => SuiteTestEvent.fromJson(json),
+      'debug' => DebugTestEvent.fromJson(json),
+      'group' => GroupTestEvent.fromJson(json),
+      'testStart' => TestStartEvent.fromJson(json),
+      'print' => MessageTestEvent.fromJson(json),
+      'error' => ErrorTestEvent.fromJson(json),
+      'testDone' => TestDoneEvent.fromJson(json),
+      'done' => DoneTestEvent.fromJson(json),
+      'exit' => ExitTestEvent.fromJson(json),
+      _ => throw UnsupportedError('Unsupported type: $type'),
+    };
   }
 
   /// The type of the event.
