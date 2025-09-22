@@ -129,9 +129,9 @@ void main() {
 ''',
       );
       expect(
-        dartTest(workingDirectory: tempDirectory.path)
-            .where((e) => e is DoneTestEvent)
-            .first,
+        dartTest(
+          workingDirectory: tempDirectory.path,
+        ).where((e) => e is DoneTestEvent).first,
         completes,
       );
     });
@@ -241,9 +241,9 @@ void main() {
 ''',
       );
       expect(
-        flutterTest(workingDirectory: tempDirectory.path)
-            .where((e) => e is DoneTestEvent)
-            .first,
+        flutterTest(
+          workingDirectory: tempDirectory.path,
+        ).where((e) => e is DoneTestEvent).first,
         completes,
       );
     });
