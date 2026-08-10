@@ -15,6 +15,25 @@
 
 - add ExitTestEvent to indicate the process has exited ([#6](https://github.com/VeryGoodOpenSource/very_good_test_runner/issues/6)) ([8f37fbd](https://github.com/VeryGoodOpenSource/very_good_test_runner/commit/8f37fbde9dafaef5702b75c8aad06e4fdca0d015))
 
+## [0.4.0](https://github.com/VeryGoodOpenSource/very_good_test_runner/compare/v0.3.0...v0.4.0) (2026-08-06)
+
+
+### Features
+
+* upgrade to Dart 3.12 ([#46](https://github.com/VeryGoodOpenSource/very_good_test_runner/issues/46)) ([a8c75a6](https://github.com/VeryGoodOpenSource/very_good_test_runner/commit/a8c75a620cb3bf841b001c54e5d0677d3878c008)), closes [#45](https://github.com/VeryGoodOpenSource/very_good_test_runner/issues/45)
+
+
+### Bug Fixes
+
+* address issue [#41](https://github.com/VeryGoodOpenSource/very_good_test_runner/issues/41) ([#44](https://github.com/VeryGoodOpenSource/very_good_test_runner/issues/44)) ([0aef48d](https://github.com/VeryGoodOpenSource/very_good_test_runner/commit/0aef48d4a090d9b5131806d23fd5f2c4dd0f90a9))
+
+
+### Miscellaneous Chores
+
+* **deps:** bump very_good_analysis from 6.0.0 to 7.0.0 ([#35](https://github.com/VeryGoodOpenSource/very_good_test_runner/issues/35)) ([a2ac230](https://github.com/VeryGoodOpenSource/very_good_test_runner/commit/a2ac2304aa1936f8b2f5290cf9bac422cc15a7bc))
+* **deps:** bump very_good_analysis from 7.0.0 to 10.0.0 ([#39](https://github.com/VeryGoodOpenSource/very_good_test_runner/issues/39)) ([2648c1e](https://github.com/VeryGoodOpenSource/very_good_test_runner/commit/2648c1e6c9dcdad486ae52bffd890c7ddb1fd97e))
+* upgrade very_good_analysis to 10.3.0 ([#49](https://github.com/VeryGoodOpenSource/very_good_test_runner/issues/49)) ([0ad1977](https://github.com/VeryGoodOpenSource/very_good_test_runner/commit/0ad1977f50dec11d1a2498e24687a4829cf07ef5)), closes [#48](https://github.com/VeryGoodOpenSource/very_good_test_runner/issues/48)
+
 ## [0.1.1](https://github.com/VeryGoodOpenSource/very_good_test_runner/compare/v0.1.0...v0.1.1) (2022-03-09)
 
 ### Bug Fixes
