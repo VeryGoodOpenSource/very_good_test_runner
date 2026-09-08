@@ -15,6 +15,13 @@
 
 - add ExitTestEvent to indicate the process has exited ([#6](https://github.com/VeryGoodOpenSource/very_good_test_runner/issues/6)) ([8f37fbd](https://github.com/VeryGoodOpenSource/very_good_test_runner/commit/8f37fbde9dafaef5702b75c8aad06e4fdca0d015))
 
+## [0.4.1](https://github.com/VeryGoodOpenSource/very_good_test_runner/compare/v0.4.0...v0.4.1) (2026-09-08)
+
+
+### Miscellaneous Chores
+
+* **deps:** bump very_good_analysis from 10.3.0 to 11.0.0 ([#58](https://github.com/VeryGoodOpenSource/very_good_test_runner/issues/58)) ([4731f74](https://github.com/VeryGoodOpenSource/very_good_test_runner/commit/4731f747407d1b5b017ebdd8328c3eddb4d3d1fc))
+
 ## [0.4.0](https://github.com/VeryGoodOpenSource/very_good_test_runner/compare/v0.3.0...v0.4.0) (2026-08-06)
 
 
