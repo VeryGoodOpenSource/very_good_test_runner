@@ -272,8 +272,7 @@ void main() {
         {
           'test': {
             'id': 1,
-            'name':
-                'loading very_good_test_runner/test/src/models/test_event_test.dart',
+            'name': 'loading very_good_test_runner/test/src/models/test_event_test.dart',
             'suiteID': 0,
             'groupIDs': <int>[],
             'metadata': {'skip': false, 'skipReason': null},
@@ -297,8 +296,7 @@ void main() {
         {
           'test': {
             'id': 3,
-            'name':
-                'loading very_good_test_runner/test/src/flutter_test_runner_test.dart',
+            'name': 'loading very_good_test_runner/test/src/flutter_test_runner_test.dart',
             'suiteID': 2,
             'groupIDs': <int>[],
             'metadata': {'skip': false, 'skipReason': null},
@@ -343,8 +341,7 @@ void main() {
             'testCount': 11,
             'line': 5,
             'column': 3,
-            'url':
-                'file://very_good_test_runner/test/src/models/test_event_test.dart',
+            'url': 'file://very_good_test_runner/test/src/models/test_event_test.dart',
           },
           'type': 'group',
           'time': 1066,
@@ -359,8 +356,7 @@ void main() {
             'testCount': 11,
             'line': 6,
             'column': 5,
-            'url':
-                'file://very_good_test_runner/test/src/models/test_event_test.dart',
+            'url': 'file://very_good_test_runner/test/src/models/test_event_test.dart',
           },
           'type': 'group',
           'time': 1067,
@@ -368,15 +364,13 @@ void main() {
         {
           'test': {
             'id': 7,
-            'name':
-                '''TestEvent fromJson throws UnsupportedError when object is not a supported test event''',
+            'name': '''TestEvent fromJson throws UnsupportedError when object is not a supported test event''',
             'suiteID': 0,
             'groupIDs': [4, 5, 6],
             'metadata': {'skip': false, 'skipReason': null},
             'line': 7,
             'column': 7,
-            'url':
-                'file://very_good_test_runner/test/src/models/test_event_test.dart',
+            'url': 'file://very_good_test_runner/test/src/models/test_event_test.dart',
           },
           'type': 'testStart',
           'time': 1067,
@@ -414,8 +408,7 @@ void main() {
             'testCount': 3,
             'line': 27,
             'column': 3,
-            'url':
-                'file://very_good_test_runner/test/src/flutter_test_runner_test.dart',
+            'url': 'file://very_good_test_runner/test/src/flutter_test_runner_test.dart',
           },
           'type': 'group',
           'time': 1074,
@@ -429,8 +422,7 @@ void main() {
             'metadata': {'skip': false, 'skipReason': null},
             'line': 53,
             'column': 5,
-            'url':
-                'file://very_good_test_runner/test/src/flutter_test_runner_test.dart',
+            'url': 'file://very_good_test_runner/test/src/flutter_test_runner_test.dart',
           },
           'type': 'testStart',
           'time': 1075,
@@ -453,8 +445,7 @@ void main() {
             'metadata': {'skip': false, 'skipReason': null},
             'line': 20,
             'column': 7,
-            'url':
-                'file://very_good_test_runner/test/src/models/test_event_test.dart',
+            'url': 'file://very_good_test_runner/test/src/models/test_event_test.dart',
           },
           'type': 'testStart',
           'time': 1125,
@@ -477,8 +468,7 @@ void main() {
             'metadata': {'skip': false, 'skipReason': null},
             'line': 31,
             'column': 7,
-            'url':
-                'file://very_good_test_runner/test/src/models/test_event_test.dart',
+            'url': 'file://very_good_test_runner/test/src/models/test_event_test.dart',
           },
           'type': 'testStart',
           'time': 1133,
@@ -501,8 +491,7 @@ void main() {
             'metadata': {'skip': false, 'skipReason': null},
             'line': 44,
             'column': 7,
-            'url':
-                'file://very_good_test_runner/test/src/models/test_event_test.dart',
+            'url': 'file://very_good_test_runner/test/src/models/test_event_test.dart',
           },
           'type': 'testStart',
           'time': 1139,
@@ -518,15 +507,13 @@ void main() {
         {
           'test': {
             'id': 14,
-            'name':
-                '''TestEvent fromJson returns TestStartEvent when type is testStart''',
+            'name': '''TestEvent fromJson returns TestStartEvent when type is testStart''',
             'suiteID': 0,
             'groupIDs': [4, 5, 6],
             'metadata': {'skip': false, 'skipReason': null},
             'line': 64,
             'column': 7,
-            'url':
-                'file://very_good_test_runner/test/src/models/test_event_test.dart',
+            'url': 'file://very_good_test_runner/test/src/models/test_event_test.dart',
           },
           'type': 'testStart',
           'time': 1148,
@@ -542,15 +529,13 @@ void main() {
         {
           'test': {
             'id': 15,
-            'name':
-                '''TestEvent fromJson returns AllSuitesTestEvent when type is allSuites''',
+            'name': '''TestEvent fromJson returns AllSuitesTestEvent when type is allSuites''',
             'suiteID': 0,
             'groupIDs': [4, 5, 6],
             'metadata': {'skip': false, 'skipReason': null},
             'line': 83,
             'column': 7,
-            'url':
-                'file://very_good_test_runner/test/src/models/test_event_test.dart',
+            'url': 'file://very_good_test_runner/test/src/models/test_event_test.dart',
           },
           'type': 'testStart',
           'time': 1155,
@@ -573,8 +558,7 @@ void main() {
             'metadata': {'skip': false, 'skipReason': null},
             'line': 89,
             'column': 7,
-            'url':
-                'file://very_good_test_runner/test/src/models/test_event_test.dart',
+            'url': 'file://very_good_test_runner/test/src/models/test_event_test.dart',
           },
           'type': 'testStart',
           'time': 1160,
@@ -590,15 +574,13 @@ void main() {
         {
           'test': {
             'id': 17,
-            'name':
-                '''TestEvent fromJson returns MessageTestEvent when type is print''',
+            'name': '''TestEvent fromJson returns MessageTestEvent when type is print''',
             'suiteID': 0,
             'groupIDs': [4, 5, 6],
             'metadata': {'skip': false, 'skipReason': null},
             'line': 103,
             'column': 7,
-            'url':
-                'file://very_good_test_runner/test/src/models/test_event_test.dart',
+            'url': 'file://very_good_test_runner/test/src/models/test_event_test.dart',
           },
           'type': 'testStart',
           'time': 1168,
@@ -621,8 +603,7 @@ void main() {
             'metadata': {'skip': false, 'skipReason': null},
             'line': 116,
             'column': 7,
-            'url':
-                'file://very_good_test_runner/test/src/models/test_event_test.dart',
+            'url': 'file://very_good_test_runner/test/src/models/test_event_test.dart',
           },
           'type': 'testStart',
           'time': 1176,
@@ -644,8 +625,7 @@ void main() {
             'metadata': {'skip': false, 'skipReason': null},
             'line': 81,
             'column': 5,
-            'url':
-                'file://very_good_test_runner/test/src/flutter_test_runner_test.dart',
+            'url': 'file://very_good_test_runner/test/src/flutter_test_runner_test.dart',
           },
           'type': 'testStart',
           'time': 1179,
@@ -661,15 +641,13 @@ void main() {
         {
           'test': {
             'id': 20,
-            'name':
-                '''TestEvent fromJson returns TestDoneEvent when type is testDone''',
+            'name': '''TestEvent fromJson returns TestDoneEvent when type is testDone''',
             'suiteID': 0,
             'groupIDs': [4, 5, 6],
             'metadata': {'skip': false, 'skipReason': null},
             'line': 128,
             'column': 7,
-            'url':
-                'file://very_good_test_runner/test/src/models/test_event_test.dart',
+            'url': 'file://very_good_test_runner/test/src/models/test_event_test.dart',
           },
           'type': 'testStart',
           'time': 1184,
@@ -691,8 +669,7 @@ void main() {
             'metadata': {'skip': false, 'skipReason': null},
             'line': 94,
             'column': 5,
-            'url':
-                'file://very_good_test_runner/test/src/flutter_test_runner_test.dart',
+            'url': 'file://very_good_test_runner/test/src/flutter_test_runner_test.dart',
           },
           'type': 'testStart',
           'time': 1192,
@@ -715,8 +692,7 @@ void main() {
             'metadata': {'skip': false, 'skipReason': null},
             'line': 141,
             'column': 7,
-            'url':
-                'file://very_good_test_runner/test/src/models/test_event_test.dart',
+            'url': 'file://very_good_test_runner/test/src/models/test_event_test.dart',
           },
           'type': 'testStart',
           'time': 1194,
