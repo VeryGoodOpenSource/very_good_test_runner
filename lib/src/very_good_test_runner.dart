@@ -69,9 +69,7 @@ Stream<TestEvent> flutterTest({
   );
 }
 
-Stream<TestEvent> _runTestProcess(
-  Future<Process> Function() processRunner,
-) {
+Stream<TestEvent> _runTestProcess(Future<Process> Function() processRunner) {
   final controller = StreamController<TestEvent>();
   late StreamSubscription<dynamic> testEventSubscription;
   late StreamSubscription<dynamic> errorSubscription;
@@ -97,10 +95,7 @@ Stream<TestEvent> _runTestProcess(
     ]);
     if (controller.isClosed) return;
     controller.add(
-      ExitTestEvent(
-        time: stopwatch.elapsedMilliseconds,
-        exitCode: exitCode,
-      ),
+      ExitTestEvent(time: stopwatch.elapsedMilliseconds, exitCode: exitCode),
     );
     await controller.close();
   }

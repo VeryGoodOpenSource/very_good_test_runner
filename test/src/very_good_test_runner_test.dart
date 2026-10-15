@@ -7,7 +7,6 @@ import 'package:universal_io/io.dart';
 import 'package:very_good_test_runner/very_good_test_runner.dart';
 
 // Needed for test setup
-// ignore: one_member_abstracts
 abstract class TestProcess {
   Future<Process> start(
     String executable,
@@ -20,9 +19,9 @@ abstract class TestProcess {
   });
 }
 
-class MockTestProcess extends Mock implements TestProcess {}
+class MockTestProcess extends Mock implements TestProcess;
 
-class MockProcess extends Mock implements Process {}
+class MockProcess extends Mock implements Process;
 
 void main() {
   group('dartTest', () {
@@ -103,8 +102,7 @@ void main() {
 
     test('emits correctly (e2e)', () async {
       final tempDirectory = Directory.systemTemp.createTempSync();
-      File('${tempDirectory.path}/pubspec.yaml').writeAsStringSync(
-        '''
+      File('${tempDirectory.path}/pubspec.yaml').writeAsStringSync('''
 name: example
 version: 0.1.0+1
 
@@ -113,12 +111,10 @@ environment:
 
 dev_dependencies:
   test: any
-''',
-      );
+''');
       final testDirectory = Directory('${tempDirectory.path}/test')
         ..createSync();
-      File('${testDirectory.path}/example_test.dart').writeAsStringSync(
-        '''
+      File('${testDirectory.path}/example_test.dart').writeAsStringSync('''
 import 'package:test/test.dart';
 
 void main() {
@@ -126,12 +122,11 @@ void main() {
     expect(true, isTrue);
   });
 }
-''',
-      );
+''');
       expect(
-        dartTest(
-          workingDirectory: tempDirectory.path,
-        ).where((e) => e is DoneTestEvent).first,
+        dartTest(workingDirectory: tempDirectory.path)
+            .where((e) => e is DoneTestEvent)
+            .first,
         completes,
       );
     });
@@ -215,8 +210,7 @@ void main() {
 
     test('emits correctly (e2e)', () async {
       final tempDirectory = Directory.systemTemp.createTempSync();
-      File('${tempDirectory.path}/pubspec.yaml').writeAsStringSync(
-        '''
+      File('${tempDirectory.path}/pubspec.yaml').writeAsStringSync('''
 name: example
 version: 0.1.0+1
 
@@ -225,12 +219,10 @@ environment:
 
 dev_dependencies:
   test: any
-''',
-      );
+''');
       final testDirectory = Directory('${tempDirectory.path}/test')
         ..createSync();
-      File('${testDirectory.path}/example_a[1]_test.dart').writeAsStringSync(
-        '''
+      File('${testDirectory.path}/example_a[1]_test.dart').writeAsStringSync('''
 import 'package:test/test.dart';
 
 void main() {
@@ -238,12 +230,11 @@ void main() {
     expect(true, isTrue);
   });
 }
-''',
-      );
+''');
       expect(
-        flutterTest(
-          workingDirectory: tempDirectory.path,
-        ).where((e) => e is DoneTestEvent).first,
+        flutterTest(workingDirectory: tempDirectory.path)
+            .where((e) => e is DoneTestEvent)
+            .first,
         completes,
       );
     });
