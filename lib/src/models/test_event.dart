@@ -10,7 +10,7 @@ part 'test_event.g.dart';
 /// {@endtemplate}
 abstract class TestEvent {
   /// {@macro test_event}
-  const TestEvent({required this.type, required this.time});
+  const new({required this.type, required this.time});
 
   /// Converts [json] into a [TestEvent].
   static TestEvent fromJson(Map<String, dynamic> json) {
@@ -47,7 +47,7 @@ abstract class TestEvent {
 @JsonSerializable()
 class StartTestEvent extends TestEvent {
   /// {@macro start_test_event}
-  const StartTestEvent({
+  const new({
     required this.protocolVersion,
     required this.runnerVersion,
     required this.pid,
@@ -55,8 +55,7 @@ class StartTestEvent extends TestEvent {
   }) : super(type: 'start');
 
   /// {@macro start_test_event}
-  factory StartTestEvent.fromJson(Map<String, dynamic> json) =>
-      _$StartTestEventFromJson(json);
+  factory fromJson(Map<String, dynamic> json) => _$StartTestEventFromJson(json);
 
   /// The version of the JSON reporter protocol being used.
   ///
@@ -82,13 +81,11 @@ class StartTestEvent extends TestEvent {
 @JsonSerializable()
 class AllSuitesTestEvent extends TestEvent {
   /// {@macro all_suites_test_event}
-  const AllSuitesTestEvent({
-    required this.count,
-    required super.time,
-  }) : super(type: 'allSuites');
+  const new({required this.count, required super.time})
+    : super(type: 'allSuites');
 
   /// {@macro all_suites_test_event}
-  factory AllSuitesTestEvent.fromJson(Map<String, dynamic> json) =>
+  factory fromJson(Map<String, dynamic> json) =>
       _$AllSuitesTestEventFromJson(json);
 
   /// The total number of suites that will be loaded.
@@ -104,14 +101,10 @@ class AllSuitesTestEvent extends TestEvent {
 @JsonSerializable()
 class SuiteTestEvent extends TestEvent {
   /// {@macro suite_test_event}
-  const SuiteTestEvent({
-    required this.suite,
-    required super.time,
-  }) : super(type: 'suite');
+  const new({required this.suite, required super.time}) : super(type: 'suite');
 
   /// {@macro suite_test_event}
-  factory SuiteTestEvent.fromJson(Map<String, dynamic> json) =>
-      _$SuiteTestEventFromJson(json);
+  factory fromJson(Map<String, dynamic> json) => _$SuiteTestEventFromJson(json);
 
   /// Metadata about the suite.
   final TestSuite suite;
@@ -125,7 +118,7 @@ class SuiteTestEvent extends TestEvent {
 @JsonSerializable()
 class DebugTestEvent extends TestEvent {
   /// {@macro debug_test_event}
-  const DebugTestEvent({
+  const new({
     required this.suiteID,
     required this.observatory,
     required this.remoteDebugger,
@@ -133,8 +126,7 @@ class DebugTestEvent extends TestEvent {
   }) : super(type: 'debug');
 
   /// {@macro debug_test_event}
-  factory DebugTestEvent.fromJson(Map<String, dynamic> json) =>
-      _$DebugTestEventFromJson(json);
+  factory fromJson(Map<String, dynamic> json) => _$DebugTestEventFromJson(json);
 
   /// The suite for which debug information is reported.
   final int suiteID;
@@ -157,14 +149,10 @@ class DebugTestEvent extends TestEvent {
 @JsonSerializable()
 class GroupTestEvent extends TestEvent {
   /// {@macro group_test_event}
-  const GroupTestEvent({
-    required this.group,
-    required super.time,
-  }) : super(type: 'group');
+  const new({required this.group, required super.time}) : super(type: 'group');
 
   /// {@macro group_test_event}
-  factory GroupTestEvent.fromJson(Map<String, dynamic> json) =>
-      _$GroupTestEventFromJson(json);
+  factory fromJson(Map<String, dynamic> json) => _$GroupTestEventFromJson(json);
 
   /// Metadata about the group.
   final TestGroup group;
@@ -178,14 +166,11 @@ class GroupTestEvent extends TestEvent {
 @JsonSerializable()
 class TestStartEvent extends TestEvent {
   /// {@macro test_start_event}
-  const TestStartEvent({
-    required this.test,
-    required super.time,
-  }) : super(type: 'testStart');
+  const new({required this.test, required super.time})
+    : super(type: 'testStart');
 
   /// {@macro test_start_event}
-  factory TestStartEvent.fromJson(Map<String, dynamic> json) =>
-      _$TestStartEventFromJson(json);
+  factory fromJson(Map<String, dynamic> json) => _$TestStartEventFromJson(json);
 
   /// Metadata about the test that started.
   final Test test;
@@ -200,7 +185,7 @@ class TestStartEvent extends TestEvent {
 @JsonSerializable()
 class MessageTestEvent extends TestEvent {
   /// {@macro message_test_event}
-  const MessageTestEvent({
+  const new({
     required this.testID,
     required this.messageType,
     required this.message,
@@ -208,7 +193,7 @@ class MessageTestEvent extends TestEvent {
   }) : super(type: 'print');
 
   /// {@macro message_test_event}
-  factory MessageTestEvent.fromJson(Map<String, dynamic> json) =>
+  factory fromJson(Map<String, dynamic> json) =>
       _$MessageTestEventFromJson(json);
 
   /// The ID of the test that printed a message.
@@ -229,7 +214,7 @@ class MessageTestEvent extends TestEvent {
 @JsonSerializable()
 class ErrorTestEvent extends TestEvent {
   /// {@macro error_test_event}
-  const ErrorTestEvent({
+  const new({
     required this.testID,
     required this.error,
     required this.stackTrace,
@@ -238,8 +223,7 @@ class ErrorTestEvent extends TestEvent {
   }) : super(type: 'error');
 
   /// {@macro error_test_event}
-  factory ErrorTestEvent.fromJson(Map<String, dynamic> json) =>
-      _$ErrorTestEventFromJson(json);
+  factory fromJson(Map<String, dynamic> json) => _$ErrorTestEventFromJson(json);
 
   /// The ID of the test that experienced the error.
   final int testID;
@@ -273,7 +257,7 @@ enum TestResult {
 @JsonSerializable()
 class TestDoneEvent extends TestEvent {
   /// {@macro test_done_event}
-  const TestDoneEvent({
+  const new({
     required this.testID,
     required this.result,
     required this.hidden,
@@ -282,8 +266,7 @@ class TestDoneEvent extends TestEvent {
   }) : super(type: 'testDone');
 
   /// {@macro test_done_event}
-  factory TestDoneEvent.fromJson(Map<String, dynamic> json) =>
-      _$TestDoneEventFromJson(json);
+  factory fromJson(Map<String, dynamic> json) => _$TestDoneEventFromJson(json);
 
   /// The ID of the test that completed.
   final int testID;
@@ -305,14 +288,10 @@ class TestDoneEvent extends TestEvent {
 @JsonSerializable()
 class DoneTestEvent extends TestEvent {
   /// {@macro done_test_event}
-  const DoneTestEvent({
-    required this.success,
-    required super.time,
-  }) : super(type: 'done');
+  const new({required this.success, required super.time}) : super(type: 'done');
 
   /// {@macro done_test_event}
-  factory DoneTestEvent.fromJson(Map<String, dynamic> json) =>
-      _$DoneTestEventFromJson(json);
+  factory fromJson(Map<String, dynamic> json) => _$DoneTestEventFromJson(json);
 
   /// Whether all tests succeeded (or were skipped).
   ///
@@ -328,12 +307,11 @@ class DoneTestEvent extends TestEvent {
 @JsonSerializable()
 class ExitTestEvent extends TestEvent {
   /// {@macro test_exit_event}
-  const ExitTestEvent({required super.time, required this.exitCode})
+  const new({required super.time, required this.exitCode})
     : super(type: 'exit');
 
   /// {@macro test_exit_event}
-  factory ExitTestEvent.fromJson(Map<String, dynamic> json) =>
-      _$ExitTestEventFromJson(json);
+  factory fromJson(Map<String, dynamic> json) => _$ExitTestEventFromJson(json);
 
   /// The exit code associated with the test process.
   final int exitCode;
@@ -353,15 +331,10 @@ class ExitTestEvent extends TestEvent {
 @JsonSerializable()
 class TestSuite {
   /// {@macro test_suite}
-  const TestSuite({
-    required this.id,
-    required this.platform,
-    this.path,
-  });
+  const new({required this.id, required this.platform, this.path});
 
   /// {@macro test_suite}
-  factory TestSuite.fromJson(Map<String, dynamic> json) =>
-      _$TestSuiteFromJson(json);
+  factory fromJson(Map<String, dynamic> json) => _$TestSuiteFromJson(json);
 
   /// An opaque ID for the group.
   final int id;
@@ -382,7 +355,7 @@ class TestSuite {
 @JsonSerializable()
 class TestGroup {
   /// {@macro test_group}
-  const TestGroup({
+  const new({
     required this.id,
     required this.name,
     required this.suiteID,
@@ -395,8 +368,7 @@ class TestGroup {
   });
 
   /// {@macro test_group}
-  factory TestGroup.fromJson(Map<String, dynamic> json) =>
-      _$TestGroupFromJson(json);
+  factory fromJson(Map<String, dynamic> json) => _$TestGroupFromJson(json);
 
   /// An opaque ID for the group.
   final int id;
@@ -432,11 +404,10 @@ class TestGroup {
 @JsonSerializable()
 class TestMetadata {
   /// {@macro test_metadata}
-  TestMetadata({required this.skip, this.skipReason});
+  new({required this.skip, this.skipReason});
 
   /// {@macro test_metadata}
-  factory TestMetadata.fromJson(Map<String, dynamic> json) =>
-      _$TestMetadataFromJson(json);
+  factory fromJson(Map<String, dynamic> json) => _$TestMetadataFromJson(json);
 
   /// Whether the test was skipped.
   final bool skip;
@@ -453,7 +424,7 @@ class TestMetadata {
 @JsonSerializable()
 class Test {
   /// {@macro test}
-  Test({
+  new({
     required this.id,
     required this.name,
     required this.suiteID,
@@ -468,7 +439,7 @@ class Test {
   });
 
   /// {@macro test}
-  factory Test.fromJson(Map<String, dynamic> json) => _$TestFromJson(json);
+  factory fromJson(Map<String, dynamic> json) => _$TestFromJson(json);
 
   /// An opaque ID for the test.
   final int id;

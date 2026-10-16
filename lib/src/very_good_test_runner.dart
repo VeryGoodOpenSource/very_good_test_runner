@@ -5,16 +5,15 @@ import 'package:universal_io/io.dart';
 import 'package:very_good_test_runner/very_good_test_runner.dart';
 
 /// Signature for `Process.start`.
-typedef StartProcess =
-    Future<Process> Function(
-      String executable,
-      List<String> arguments, {
-      String? workingDirectory,
-      Map<String, String>? environment,
-      bool includeParentEnvironment,
-      bool runInShell,
-      ProcessStartMode mode,
-    });
+typedef StartProcess = Future<Process> Function(
+  String executable,
+  List<String> arguments, {
+  String? workingDirectory,
+  Map<String, String>? environment,
+  bool includeParentEnvironment,
+  bool runInShell,
+  ProcessStartMode mode,
+});
 
 /// Runs `dart test` and returns a stream of [TestEvent]
 /// reported by the process.
@@ -70,9 +69,7 @@ Stream<TestEvent> flutterTest({
   );
 }
 
-Stream<TestEvent> _runTestProcess(
-  Future<Process> Function() processRunner,
-) {
+Stream<TestEvent> _runTestProcess(Future<Process> Function() processRunner) {
   final controller = StreamController<TestEvent>();
   late StreamSubscription<dynamic> testEventSubscription;
   late StreamSubscription<dynamic> errorSubscription;
@@ -98,10 +95,7 @@ Stream<TestEvent> _runTestProcess(
     ]);
     if (controller.isClosed) return;
     controller.add(
-      ExitTestEvent(
-        time: stopwatch.elapsedMilliseconds,
-        exitCode: exitCode,
-      ),
+      ExitTestEvent(time: stopwatch.elapsedMilliseconds, exitCode: exitCode),
     );
     await controller.close();
   }
