@@ -710,7 +710,7 @@ void main() {
       final testEvents = flutterTest(startProcess: testProcess.start);
       final subscription = testEvents.listen(events.add);
       final encodedEvents = rawEvents.map(
-        (element) => utf8.encode(json.encode(element)),
+        (element) => utf8.encode('${json.encode(element)}\n'),
       );
       await stdoutController.addStream(Stream.fromIterable(encodedEvents));
       expect(
@@ -763,6 +763,49 @@ void main() {
       completer.complete(0);
       await Future<void>.delayed(Duration.zero);
       expect(events.last, isA<ExitTestEvent>());
+      unawaited(subscription.cancel());
+    });
+
+    test('emits events split across stdout chunks', () async {
+      final completer = Completer<int>();
+      when(() => process.exitCode).thenAnswer((_) => completer.future);
+      final events = <TestEvent>[];
+      final testEvents = flutterTest(startProcess: testProcess.start);
+      final subscription = testEvents.listen(events.add);
+      final bytes = utf8.encode(
+        '${json.encode({
+          'test': {
+            'id': 1,
+            'name': 'ünïcödé',
+            'suiteID': 0,
+            'groupIDs': <int>[],
+            'metadata': {'skip': false, 'skipReason': null},
+            'line': null,
+            'column': null,
+            'url': null,
+          },
+          'type': 'testStart',
+          'time': 0,
+        })}\n'
+        '${json.encode({'success': true, 'type': 'done', 'time': 1})}\n',
+      );
+      final multiByte = bytes.indexOf(0xc3);
+      await stdoutController.addStream(
+        Stream.fromIterable([
+          bytes.sublist(0, multiByte + 1),
+          bytes.sublist(multiByte + 1, 50),
+          bytes.sublist(50),
+        ]),
+      );
+      await Future<void>.delayed(Duration.zero);
+      expect(
+        events,
+        equals([
+          isA<TestStartEvent>().having((e) => e.test.name, 'name', 'ünïcödé'),
+          isA<DoneTestEvent>(),
+        ]),
+      );
+      completer.complete(0);
       unawaited(subscription.cancel());
     });
   });
