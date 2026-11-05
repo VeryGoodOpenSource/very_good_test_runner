@@ -88,11 +88,12 @@ Stream<TestEvent> _runTestProcess(Future<Process> Function() processRunner) {
     );
 
     final exitCode = await process.exitCode;
-    stopwatch.stop();
+    // Drain remaining events before emitting the exit event.
     await Future.wait([
-      errorSubscription.cancel(),
-      testEventSubscription.cancel(),
+      errorSubscription.asFuture<void>(),
+      testEventSubscription.asFuture<void>(),
     ]);
+    stopwatch.stop();
     if (controller.isClosed) return;
     controller.add(
       ExitTestEvent(time: stopwatch.elapsedMilliseconds, exitCode: exitCode),
@@ -101,7 +102,7 @@ Stream<TestEvent> _runTestProcess(Future<Process> Function() processRunner) {
   }
 
   Future<void> onCancel() async {
-    await controller.close();
+    // Not awaited: close() triggers onCancel, so awaiting it would deadlock.
     (await processFuture).kill();
     await errorSubscription.cancel();
     await testEventSubscription.cancel();
