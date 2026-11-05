@@ -15,6 +15,25 @@
 
 - add ExitTestEvent to indicate the process has exited ([#6](https://github.com/VeryGoodOpenSource/very_good_test_runner/issues/6)) ([8f37fbd](https://github.com/VeryGoodOpenSource/very_good_test_runner/commit/8f37fbde9dafaef5702b75c8aad06e4fdca0d015))
 
+## [0.5.0](https://github.com/VeryGoodOpenSource/very_good_test_runner/compare/v0.4.0...v0.5.0) (2026-11-05)
+
+
+### Features
+
+* **deps:** upgrade to Dart 3.13 ([#57](https://github.com/VeryGoodOpenSource/very_good_test_runner/issues/57)) ([be76ed7](https://github.com/VeryGoodOpenSource/very_good_test_runner/commit/be76ed7cebdd2082b7299d7a46e73edbe846b0fa))
+
+
+### Bug Fixes
+
+* drain stdout/stderr and close stream when test process exits ([#68](https://github.com/VeryGoodOpenSource/very_good_test_runner/issues/68)) ([3041e9f](https://github.com/VeryGoodOpenSource/very_good_test_runner/commit/3041e9fa0f8910e340a1af18ddc43f9f893e0d72))
+* parse test events split across stdout chunks ([#66](https://github.com/VeryGoodOpenSource/very_good_test_runner/issues/66)) ([bba7cfd](https://github.com/VeryGoodOpenSource/very_good_test_runner/commit/bba7cfd3e9ca4b6d5135688e19e98f100d80e723))
+
+
+### Miscellaneous Chores
+
+* add unicoder.yaml with VGV preset ([#60](https://github.com/VeryGoodOpenSource/very_good_test_runner/issues/60)) ([3a25fc4](https://github.com/VeryGoodOpenSource/very_good_test_runner/commit/3a25fc4675dbbda6f07a01110e8d0d825baeef3c))
+* **deps:** bump very_good_analysis from 10.3.0 to 11.0.0 ([#58](https://github.com/VeryGoodOpenSource/very_good_test_runner/issues/58)) ([4731f74](https://github.com/VeryGoodOpenSource/very_good_test_runner/commit/4731f747407d1b5b017ebdd8328c3eddb4d3d1fc))
+
 ## [0.4.0](https://github.com/VeryGoodOpenSource/very_good_test_runner/compare/v0.3.0...v0.4.0) (2026-08-06)
 
 
