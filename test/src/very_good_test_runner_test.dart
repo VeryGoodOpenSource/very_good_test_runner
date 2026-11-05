@@ -761,6 +761,10 @@ void main() {
         ]),
       );
       completer.complete(0);
+      // A real process closes its stdout/stderr pipes when it exits; closing
+      // the controllers lets the subscriptions drain and complete.
+      await stderrController.close();
+      await stdoutController.close();
       await Future<void>.delayed(Duration.zero);
       expect(events.last, isA<ExitTestEvent>());
       unawaited(subscription.cancel());
@@ -808,5 +812,50 @@ void main() {
       completer.complete(0);
       unawaited(subscription.cancel());
     });
+
+    test(
+      'drains buffered events and closes the stream when the process exits',
+      () async {
+        final completer = Completer<int>();
+        when(() => process.exitCode).thenAnswer((_) => completer.future);
+        final events = <TestEvent>[];
+        var done = false;
+        flutterTest(startProcess: testProcess.start)
+            .listen(events.add, onDone: () => done = true);
+
+        final rawEvents = [
+          {
+            'protocolVersion': '0.1.1',
+            'runnerVersion': '1.20.1',
+            'pid': 80881,
+            'type': 'start',
+            'time': 0,
+          },
+          {'success': true, 'type': 'done', 'time': 1},
+        ];
+        final encodedEvents = rawEvents.map(
+          (element) => utf8.encode('${json.encode(element)}\n'),
+        );
+
+        // The process exits before its stdout has been read, then closes its
+        // pipes. All buffered events must still be emitted, followed by the
+        // exit event and stream completion.
+        completer.complete(0);
+        await stdoutController.addStream(Stream.fromIterable(encodedEvents));
+        await stderrController.close();
+        await stdoutController.close();
+        await Future<void>.delayed(Duration.zero);
+
+        expect(
+          events,
+          equals([
+            isA<StartTestEvent>(),
+            isA<DoneTestEvent>(),
+            isA<ExitTestEvent>(),
+          ]),
+        );
+        expect(done, isTrue);
+      },
+    );
   });
 }
