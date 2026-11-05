@@ -761,8 +761,7 @@ void main() {
         ]),
       );
       completer.complete(0);
-      // A real process closes its stdout/stderr pipes when it exits; closing
-      // the controllers lets the subscriptions drain and complete.
+      // Simulate the process closing its pipes on exit.
       await stderrController.close();
       await stdoutController.close();
       await Future<void>.delayed(Duration.zero);
@@ -837,9 +836,7 @@ void main() {
           (element) => utf8.encode('${json.encode(element)}\n'),
         );
 
-        // The process exits before its stdout has been read, then closes its
-        // pipes. All buffered events must still be emitted, followed by the
-        // exit event and stream completion.
+        // Simulate the process closing its pipes on exit.
         completer.complete(0);
         await stdoutController.addStream(Stream.fromIterable(encodedEvents));
         await stderrController.close();

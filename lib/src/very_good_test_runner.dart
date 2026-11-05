@@ -88,9 +88,7 @@ Stream<TestEvent> _runTestProcess(Future<Process> Function() processRunner) {
     );
 
     final exitCode = await process.exitCode;
-    // Wait for the stdout and stderr subscriptions to drain any remaining
-    // events before emitting the exit event. Cancelling them here would drop
-    // events that the process emitted but that haven't been read yet.
+    // Drain remaining events before emitting the exit event.
     await Future.wait([
       errorSubscription.asFuture<void>(),
       testEventSubscription.asFuture<void>(),
@@ -104,8 +102,7 @@ Stream<TestEvent> _runTestProcess(Future<Process> Function() processRunner) {
   }
 
   Future<void> onCancel() async {
-    // Do not await `controller.close()` here. `close()` triggers `onCancel`,
-    // so awaiting it would make this future wait on itself and never complete.
+    // Not awaited: close() triggers onCancel, so awaiting it would deadlock.
     (await processFuture).kill();
     await errorSubscription.cancel();
     await testEventSubscription.cancel();
