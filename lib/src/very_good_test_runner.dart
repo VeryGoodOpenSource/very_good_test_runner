@@ -116,17 +116,12 @@ Stream<TestEvent> _runTestProcess(Future<Process> Function() processRunner) {
 
 extension on Stream<List<int>> {
   Stream<TestEvent> mapToTestEvents() {
-    return map(utf8.decode)
-        .expand<String>(_splitLines)
+    return transform(utf8.decoder)
+        .transform(const LineSplitter())
+        .map((line) => line.trim())
         .map<Map<String, Object?>>(_tryDecode)
         .where((value) => value.isNotEmpty)
         .map(TestEvent.fromJson);
-  }
-
-  Iterable<String> _splitLines(String content) sync* {
-    for (final line in content.split('\n')) {
-      yield line.trim();
-    }
   }
 
   Map<String, Object?> _tryDecode(String value) {
