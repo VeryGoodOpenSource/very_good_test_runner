@@ -15,15 +15,12 @@ typedef StartProcess = Future<Process> Function(
   ProcessStartMode mode,
 });
 
-/// The default grace period to wait for the test process to shut down
-/// gracefully after the first `SIGTERM` before escalating.
+/// The default time the test process is given to exit after the first
+/// `SIGTERM` before cancellation escalates.
 const _defaultGracePeriod = Duration(seconds: 2);
 
-/// The time to wait for the test process to exit after each escalation signal
+/// The time the test process is given to exit after each escalation signal
 /// (a second `SIGTERM` and, as a last resort, `SIGKILL`).
-///
-/// Kept separate from the grace period so the worst case stays bounded at
-/// roughly `grace + 2 * _reapTimeout`.
 const _reapTimeout = Duration(seconds: 1);
 
 /// Runs `dart test` and returns a stream of [TestEvent]
@@ -36,15 +33,29 @@ const _reapTimeout = Duration(seconds: 1);
 /// }
 /// ```
 ///
-/// When the returned subscription is cancelled while the process is still
-/// running, the process is sent a `SIGTERM` and given [grace] to exit before
-/// the cancellation escalates. See [_terminateProcess] for the full sequence.
+/// {@template very_good_test_runner.cancellation}
+/// Cancelling the subscription stops the test process, and the future
+/// returned by `cancel()` completes once the process has exited:
+///
+/// 1. A `SIGTERM` is sent and the process gets [gracePeriod] (2 seconds by
+///    default) to exit.
+/// 2. If it is still running, a second `SIGTERM` is sent and it gets 1 more
+///    second.
+/// 3. If it is still running, `SIGKILL` is sent and it gets 1 more second.
+///
+/// So `cancel()` takes at most about [gracePeriod] plus 2 seconds.
+///
+/// The signals go to the process that was started. When [runInShell] is
+/// `true` that is the shell, not the test runner, and `SIGKILL` does not reach
+/// child processes such as `flutter_tester`, so those may outlive the
+/// cancellation.
+/// {@endtemplate}
 Stream<TestEvent> dartTest({
   List<String>? arguments,
   String? workingDirectory,
   Map<String, String>? environment,
   bool runInShell = false,
-  Duration grace = _defaultGracePeriod,
+  Duration gracePeriod = _defaultGracePeriod,
   StartProcess startProcess = Process.start,
 }) {
   return _runTestProcess(
@@ -55,7 +66,7 @@ Stream<TestEvent> dartTest({
       workingDirectory: workingDirectory,
       runInShell: runInShell,
     ),
-    grace: grace,
+    gracePeriod: gracePeriod,
   );
 }
 
@@ -69,15 +80,13 @@ Stream<TestEvent> dartTest({
 /// }
 /// ```
 ///
-/// When the returned subscription is cancelled while the process is still
-/// running, the process is sent a `SIGTERM` and given [grace] to exit before
-/// the cancellation escalates. See [_terminateProcess] for the full sequence.
+/// {@macro very_good_test_runner.cancellation}
 Stream<TestEvent> flutterTest({
   List<String>? arguments,
   String? workingDirectory,
   Map<String, String>? environment,
   bool runInShell = false,
-  Duration grace = _defaultGracePeriod,
+  Duration gracePeriod = _defaultGracePeriod,
   StartProcess startProcess = Process.start,
 }) {
   return _runTestProcess(
@@ -88,15 +97,17 @@ Stream<TestEvent> flutterTest({
       workingDirectory: workingDirectory,
       runInShell: runInShell,
     ),
-    grace: grace,
+    gracePeriod: gracePeriod,
   );
 }
 
 Stream<TestEvent> _runTestProcess(
   Future<Process> Function() processRunner, {
-  required Duration grace,
+  required Duration gracePeriod,
 }) {
   final controller = StreamController<TestEvent>();
+  final cancelled = Completer<void>();
+  var hasExited = false;
   late StreamSubscription<dynamic> testEventSubscription;
   late StreamSubscription<dynamic> errorSubscription;
   late Future<Process> processFuture;
@@ -114,13 +125,19 @@ Stream<TestEvent> _runTestProcess(
     );
 
     final exitCode = await process.exitCode;
-    // Drain remaining events before emitting the exit event.
-    await Future.wait([
-      errorSubscription.asFuture<void>(),
-      testEventSubscription.asFuture<void>(),
+    hasExited = true;
+    // Drain remaining events before emitting the exit event. If the
+    // subscription is cancelled meanwhile, onCancel cancels the pipes, so their
+    // futures would never complete; stop waiting instead.
+    await Future.any([
+      Future.wait([
+        errorSubscription.asFuture<void>(),
+        testEventSubscription.asFuture<void>(),
+      ]),
+      cancelled.future,
     ]);
     stopwatch.stop();
-    if (controller.isClosed) return;
+    if (cancelled.isCompleted || controller.isClosed) return;
     controller.add(
       ExitTestEvent(time: stopwatch.elapsedMilliseconds, exitCode: exitCode),
     );
@@ -128,9 +145,13 @@ Stream<TestEvent> _runTestProcess(
   }
 
   Future<void> onCancel() async {
-    // Ensure the process has exited before cancelling the pipe subscriptions,
-    // so that cancellation completing means the process is actually gone.
-    await _terminateProcess(await processFuture, grace: grace);
+    if (!cancelled.isCompleted) cancelled.complete();
+    final process = await processFuture;
+    // Make sure the process is gone before cancelling the pipe subscriptions,
+    // so that cancellation completing means the process has exited.
+    if (!hasExited) {
+      await _terminateProcess(process, gracePeriod: gracePeriod);
+    }
     await errorSubscription.cancel();
     await testEventSubscription.cancel();
   }
@@ -142,35 +163,28 @@ Stream<TestEvent> _runTestProcess(
   return controller.stream;
 }
 
-/// Terminates [process] and resolves once it has exited (or every escalation
-/// has been exhausted), so the caller can rely on the process being gone.
+/// Terminates [process] and completes once it has exited, or once every step
+/// below has run out of time:
 ///
-/// The sequence, escalating only when the previous step does not exit in time:
-///
-/// 1. Send `SIGTERM` ([Process.kill]) to request a graceful shutdown and wait
-///    up to [grace] for the process to exit. Well-behaved runs, including
-///    `flutter test`, exit here.
-/// 2. Send a second `SIGTERM` and wait up to [_reapTimeout]. `dart test` treats
-///    the first `SIGTERM` as "finish the tests in progress", which hangs when a
-///    test never completes; a second signal makes `test_core` clean up its
-///    (potentially very large) temp directory and exit at once.
-/// 3. As a last resort send `SIGKILL` and wait up to [_reapTimeout]. This is
-///    avoided until now because it skips `dart test`'s temp directory cleanup.
-///
-/// The worst case is bounded at roughly `grace + 2 * _reapTimeout`.
+/// 1. Send `SIGTERM` and wait up to [gracePeriod]. Well-behaved runs,
+///    including `flutter test`, exit here.
+/// 2. Send a second `SIGTERM` and wait up to [_reapTimeout]. On the first
+///    signal `dart test` stops listening for signals and closes its runner,
+///    which can hang when a test never completes. The second signal then
+///    reaches Dart's default handler, which ends the process at once. See
+///    `_execute` in
+///    https://github.com/dart-lang/test/blob/master/pkgs/test_core/lib/src/executable.dart
+/// 3. As a last resort, send `SIGKILL` and wait up to [_reapTimeout].
 Future<void> _terminateProcess(
   Process process, {
-  required Duration grace,
+  required Duration gracePeriod,
 }) async {
-  // 1. Request a graceful shutdown.
   process.kill();
-  if (await _exitedWithin(process, grace)) return;
+  if (await _exitedWithin(process, gracePeriod)) return;
 
-  // 2. A second SIGTERM forces most runners to exit immediately.
   process.kill();
   if (await _exitedWithin(process, _reapTimeout)) return;
 
-  // 3. SIGKILL as a backstop. Do not block forever.
   process.kill(ProcessSignal.sigkill);
   await _exitedWithin(process, _reapTimeout);
 }
