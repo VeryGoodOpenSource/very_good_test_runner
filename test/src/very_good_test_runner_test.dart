@@ -1,9 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:fake_async/fake_async.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
+import 'package:very_good_test_runner/src/very_good_test_runner.dart'
+    show StartProcess;
 import 'package:very_good_test_runner/very_good_test_runner.dart';
 
 // Needed for test setup
@@ -23,6 +26,87 @@ class MockTestProcess extends Mock implements TestProcess;
 
 class MockProcess extends Mock implements Process;
 
+/// A fake [Process] that records the signals it receives via [kill].
+///
+/// It exits once it has received [exitAfterSignals] signals, modelling a
+/// process that survives that many signals before dying. When
+/// [exitAfterSignals] is `null` it only exits when [terminate] is called.
+class FakeProcess extends Fake implements Process {
+  new({this.exitAfterSignals});
+
+  /// The number of signals the process survives before exiting, or `null` to
+  /// only exit when [terminate] is called.
+  final int? exitAfterSignals;
+
+  final _exitCodeCompleter = Completer<int>();
+
+  /// Backs [stdout], so tests can check whether it is still listened to.
+  final stdoutController = StreamController<List<int>>();
+
+  /// Backs [stderr], so tests can check whether it is still listened to.
+  final stderrController = StreamController<List<int>>();
+
+  /// The signals passed to [kill], in order.
+  final killSignals = <ProcessSignal>[];
+
+  /// Whether the process has exited.
+  bool get hasExited => _exitCodeCompleter.isCompleted;
+
+  @override
+  Stream<List<int>> get stdout => stdoutController.stream;
+
+  @override
+  Stream<List<int>> get stderr => stderrController.stream;
+
+  @override
+  Future<int> get exitCode => _exitCodeCompleter.future;
+
+  /// Simulates the process exiting with [code] and closing its output pipes.
+  void terminate([int code = 0]) {
+    if (hasExited) return;
+    _exitCodeCompleter.complete(code);
+    unawaited(stdoutController.close());
+    unawaited(stderrController.close());
+  }
+
+  @override
+  bool kill([ProcessSignal signal = ProcessSignal.sigterm]) {
+    killSignals.add(signal);
+    if (exitAfterSignals != null && killSignals.length >= exitAfterSignals!) {
+      terminate();
+    }
+    return true;
+  }
+}
+
+/// Builds a [StartProcess] that resolves to [process] once [started]
+/// completes.
+///
+/// When [started] is omitted the process is available immediately.
+StartProcess _startProcessReturning(Process process, {Future<void>? started}) {
+  return (
+    executable,
+    arguments, {
+    workingDirectory,
+    environment,
+    includeParentEnvironment = false,
+    runInShell = false,
+    mode = ProcessStartMode.normal,
+  }) async {
+    if (started != null) await started;
+    return process;
+  };
+}
+
+/// The public entry points, so that cancellation is tested through both.
+final _testRunners =
+    <
+      String,
+      Stream<TestEvent> Function({
+        Duration gracePeriod,
+        StartProcess startProcess,
+      })
+    >{'dartTest': dartTest, 'flutterTest': flutterTest};
 void main() {
   group('dartTest', () {
     late StreamController<List<int>> stdoutController;
@@ -854,5 +938,191 @@ void main() {
         expect(done, isTrue);
       },
     );
+  });
+
+  group('cancellation', () {
+    // A non-default grace period, so the tests check that it is forwarded.
+    const gracePeriod = Duration(seconds: 5);
+    // Mirrors `_reapTimeout` in lib/src/very_good_test_runner.dart: the time
+    // the process gets after each escalation signal.
+    const reapTimeout = Duration(seconds: 1);
+    const tick = Duration(milliseconds: 1);
+    const sigterm = ProcessSignal.sigterm;
+    const sigkill = ProcessSignal.sigkill;
+
+    for (final MapEntry(key: name, value: runTests) in _testRunners.entries) {
+      group(name, () {
+        /// Runs the tests against [process] and listens to the events.
+        ///
+        /// When [gracePeriod] is `null` the default grace period is used.
+        StreamSubscription<TestEvent> listen(
+          FakeProcess process, {
+          Duration? gracePeriod,
+          Future<void>? started,
+          void Function(TestEvent)? onData,
+          void Function()? onDone,
+        }) {
+          final startProcess = _startProcessReturning(
+            process,
+            started: started,
+          );
+          final events = gracePeriod == null
+              ? runTests(startProcess: startProcess)
+              : runTests(gracePeriod: gracePeriod, startProcess: startProcess);
+          return events.listen(onData, onDone: onDone);
+        }
+
+        // The escalation timing is driven with `fakeAsync`, so the grace
+        // period and reap timeouts never use real timers. Cancelling a pipe
+        // subscription returns a future bound to the root zone, so the future
+        // returned by `cancel()` cannot complete inside `fakeAsync`; the
+        // real-async tests further down cover when it completes.
+        group('escalation', () {
+          test('sends a single SIGTERM when the process exits on it', () {
+            fakeAsync((async) {
+              final process = FakeProcess(exitAfterSignals: 1);
+              final subscription = listen(process, gracePeriod: gracePeriod);
+              async.flushMicrotasks();
+
+              unawaited(subscription.cancel());
+              async.flushMicrotasks();
+              expect(process.killSignals, [sigterm]);
+
+              async.elapse(gracePeriod + reapTimeout * 2);
+              expect(process.killSignals, [sigterm]);
+            });
+          });
+
+          test('waits the grace period before a second SIGTERM', () {
+            fakeAsync((async) {
+              final process = FakeProcess(exitAfterSignals: 2);
+              final subscription = listen(process, gracePeriod: gracePeriod);
+              async.flushMicrotasks();
+
+              unawaited(subscription.cancel());
+              async.elapse(gracePeriod - tick);
+              expect(process.killSignals, [sigterm]);
+
+              async.elapse(tick);
+              expect(process.killSignals, [sigterm, sigterm]);
+
+              async.elapse(reapTimeout * 2);
+              expect(process.killSignals, [sigterm, sigterm]);
+            });
+          });
+
+          test('uses a 2 second grace period by default', () {
+            fakeAsync((async) {
+              final process = FakeProcess(exitAfterSignals: 2);
+              final subscription = listen(process);
+              async.flushMicrotasks();
+
+              unawaited(subscription.cancel());
+              async.elapse(const Duration(seconds: 2) - tick);
+              expect(process.killSignals, [sigterm]);
+
+              async.elapse(tick);
+              expect(process.killSignals, [sigterm, sigterm]);
+            });
+          });
+
+          test(
+            'sends SIGKILL when both SIGTERMs are ignored, then stops waiting',
+            () {
+              fakeAsync((async) {
+                final process = FakeProcess();
+                final subscription = listen(process, gracePeriod: gracePeriod);
+                async.flushMicrotasks();
+
+                unawaited(subscription.cancel());
+                async.elapse(gracePeriod);
+                expect(process.killSignals, [sigterm, sigterm]);
+
+                async.elapse(reapTimeout - tick);
+                expect(process.killSignals, [sigterm, sigterm]);
+
+                async.elapse(tick);
+                expect(process.killSignals, [sigterm, sigterm, sigkill]);
+                expect(process.stderrController.hasListener, isTrue);
+
+                // The process never exits, yet once the last reap timeout runs
+                // out cancellation moves on to the pipes, with no further
+                // signals or timers.
+                async.elapse(reapTimeout);
+                expect(process.stderrController.hasListener, isFalse);
+
+                async.elapse(reapTimeout * 10);
+                expect(process.killSignals, [sigterm, sigterm, sigkill]);
+                expect(async.pendingTimers, isEmpty);
+              });
+            },
+          );
+        });
+
+        test('completes cancel only after the process has exited', () async {
+          final process = FakeProcess();
+          final subscription = listen(process, gracePeriod: gracePeriod);
+          await pumpEventQueue();
+
+          var cancelled = false;
+          final cancellation = subscription.cancel().then(
+            (_) => cancelled = true,
+          );
+          await pumpEventQueue();
+
+          expect(process.killSignals, [sigterm]);
+          expect(cancelled, isFalse);
+
+          process.terminate();
+          await cancellation;
+
+          expect(process.stdoutController.hasListener, isFalse);
+          expect(process.stderrController.hasListener, isFalse);
+        });
+
+        test(
+          'sends SIGTERM once the process starts when cancelled before',
+          () async {
+            final process = FakeProcess(exitAfterSignals: 1);
+            final started = Completer<void>();
+            final subscription = listen(
+              process,
+              gracePeriod: gracePeriod,
+              started: started.future,
+            );
+
+            final cancellation = subscription.cancel();
+            await pumpEventQueue();
+
+            // No signal can be sent before there is a process.
+            expect(process.killSignals, isEmpty);
+
+            started.complete();
+            await cancellation;
+
+            expect(process.killSignals, [sigterm]);
+          },
+        );
+
+        test('sends no signal when the process exits on its own', () async {
+          final process = FakeProcess();
+          final events = <TestEvent>[];
+          final done = Completer<void>();
+          listen(
+            process,
+            gracePeriod: gracePeriod,
+            onData: events.add,
+            onDone: done.complete,
+          );
+          await pumpEventQueue();
+
+          process.terminate();
+          await done.future;
+
+          expect(events, [isA<ExitTestEvent>()]);
+          expect(process.killSignals, isEmpty);
+        });
+      });
+    }
   });
 }
