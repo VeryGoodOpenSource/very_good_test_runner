@@ -15,6 +15,13 @@
 
 - add ExitTestEvent to indicate the process has exited ([#6](https://github.com/VeryGoodOpenSource/very_good_test_runner/issues/6)) ([8f37fbd](https://github.com/VeryGoodOpenSource/very_good_test_runner/commit/8f37fbde9dafaef5702b75c8aad06e4fdca0d015))
 
+## [0.6.0](https://github.com/VeryGoodOpenSource/very_good_test_runner/compare/v0.5.0...v0.6.0) (2026-11-10)
+
+
+### Features
+
+* ensure test process exits when stream is cancelled ([#70](https://github.com/VeryGoodOpenSource/very_good_test_runner/issues/70)) ([98954b7](https://github.com/VeryGoodOpenSource/very_good_test_runner/commit/98954b7e5a65a78405108d9cb26ea8bfdaf4c135))
+
 ## [0.5.0](https://github.com/VeryGoodOpenSource/very_good_test_runner/compare/v0.4.0...v0.5.0) (2026-11-05)
 
 
