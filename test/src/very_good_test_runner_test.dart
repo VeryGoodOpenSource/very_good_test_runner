@@ -940,6 +940,60 @@ void main() {
     );
   });
 
+  group('stderr', () {
+    const startupLockNotice =
+        'Waiting for another flutter command to release the startup lock...';
+
+    for (final MapEntry(key: name, value: runTest) in _testRunners.entries) {
+      group(name, () {
+        late FakeProcess process;
+
+        setUp(() {
+          process = FakeProcess();
+        });
+
+        Future<List<Object>> errorsFor(List<String> chunks) async {
+          final errors = <Object>[];
+          final subscription = runTest(
+            startProcess: _startProcessReturning(process),
+          ).listen((_) {}, onError: errors.add);
+          await pumpEventQueue();
+          chunks.map(utf8.encode).forEach(process.stderrController.add);
+          await pumpEventQueue();
+          process.terminate();
+          await subscription.asFuture<void>();
+          await subscription.cancel();
+          return errors;
+        }
+
+        test('does not emit the flutter startup lock notice', () async {
+          // `flutter` prints the notice and then clears it with spaces.
+          final errors = await errorsFor([
+            '$startupLockNotice\r',
+            '${' ' * startupLockNotice.length}\r',
+            '$startupLockNotice\n',
+          ]);
+          expect(errors, isEmpty);
+        });
+
+        test('does not emit blank output', () async {
+          final errors = await errorsFor(['', ' \n\r\n ']);
+          expect(errors, isEmpty);
+        });
+
+        test('emits errors that come with the startup lock notice', () async {
+          final errors = await errorsFor(['$startupLockNotice\noops\n']);
+          expect(errors, equals(['oops']));
+        });
+
+        test('keeps the lines of a multiline error together', () async {
+          final errors = await errorsFor(['first\n  second\n']);
+          expect(errors, equals(['first\nsecond']));
+        });
+      });
+    }
+  });
+
   group('cancellation', () {
     // A non-default grace period, so the tests check that it is forwarded.
     const gracePeriod = Duration(seconds: 5);

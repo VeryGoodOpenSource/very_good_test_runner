@@ -80,6 +80,11 @@ Stream<TestEvent> dartTest({
 /// }
 /// ```
 ///
+/// Output written to stderr is reported as errors on the stream, except for
+/// the "Waiting for another flutter command to release the startup lock..."
+/// notice, which `flutter` prints when several commands start at once (for
+/// example when running shards in parallel) and which is not an error.
+///
 /// {@macro very_good_test_runner.cancellation}
 Stream<TestEvent> flutterTest({
   List<String>? arguments,
@@ -116,7 +121,9 @@ Stream<TestEvent> _runTestProcess(
     final stopwatch = Stopwatch()..start();
     processFuture = processRunner();
     final process = await processFuture;
-    final errors = process.stderr.map((e) => utf8.decode(e).trim());
+    final errors = process.stderr
+        .map((e) => _toErrorMessage(utf8.decode(e)))
+        .where((message) => message.isNotEmpty);
     final testEvents = process.stdout.mapToTestEvents();
     errorSubscription = errors.listen(controller.addError);
     testEventSubscription = testEvents.listen(
@@ -161,6 +168,29 @@ Stream<TestEvent> _runTestProcess(
     ..onCancel = onCancel;
 
   return controller.stream;
+}
+
+/// The notice the `flutter` tool writes to stderr while it waits for another
+/// `flutter` command to finish starting up, for example when several
+/// `flutter test` processes are started at once. It is not an error.
+const _startupLockNotice =
+    'Waiting for another flutter command to release the startup lock';
+
+/// Matches the line breaks and carriage returns that separate stderr lines.
+final _lineBreak = RegExp(r'[\r\n]+');
+
+/// Returns the error message held by a [chunk] of stderr, or an empty string
+/// when the chunk holds nothing worth reporting.
+///
+/// Blank lines and the [_startupLockNotice] are dropped. The `flutter` tool
+/// also clears that notice by overwriting it with spaces, which is why
+/// whitespace-only output is ignored.
+String _toErrorMessage(String chunk) {
+  return chunk
+      .split(_lineBreak)
+      .map((line) => line.trim())
+      .where((line) => line.isNotEmpty && !line.contains(_startupLockNotice))
+      .join('\n');
 }
 
 /// Terminates [process] and completes once it has exited, or once every step
