@@ -940,6 +940,38 @@ void main() {
         expect(done, isTrue);
       },
     );
+
+    test(
+      'emits the exit event when the pipes close before the process exits',
+      () async {
+        final completer = Completer<int>();
+        when(() => process.exitCode).thenAnswer((_) => completer.future);
+        final events = <TestEvent>[];
+        var done = false;
+        flutterTest(startProcess: testProcess.start)
+            .listen(events.add, onDone: () => done = true);
+
+        final doneEvent = {'success': true, 'type': 'done', 'time': 1};
+        await stdoutController.addStream(
+          Stream.value(utf8.encode('${json.encode(doneEvent)}\n')),
+        );
+        await stderrController.close();
+        await stdoutController.close();
+        await Future<void>.delayed(Duration.zero);
+
+        completer.complete(0);
+        await Future<void>.delayed(Duration.zero);
+
+        expect(
+          events,
+          equals([
+            isA<DoneTestEvent>(),
+            isA<ExitTestEvent>().having((e) => e.exitCode, 'exitCode', 0),
+          ]),
+        );
+        expect(done, isTrue);
+      },
+    );
   });
 
   group('stderr', () {
