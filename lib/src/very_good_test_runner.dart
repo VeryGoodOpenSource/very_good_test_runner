@@ -121,9 +121,7 @@ Stream<TestEvent> _runTestProcess(
     final stopwatch = Stopwatch()..start();
     processFuture = processRunner();
     final process = await processFuture;
-    final errors = process.stderr
-        .map((e) => _toErrorMessage(utf8.decode(e)))
-        .where((message) => message.isNotEmpty);
+    final errors = process.stderr.mapToErrorMessages();
     final testEvents = process.stdout.mapToTestEvents();
     errorSubscription = errors.listen(controller.addError);
     testEventSubscription = testEvents.listen(
@@ -176,23 +174,6 @@ Stream<TestEvent> _runTestProcess(
 const _startupLockNotice =
     'Waiting for another flutter command to release the startup lock';
 
-/// Matches the line breaks and carriage returns that separate stderr lines.
-final _lineBreak = RegExp(r'[\r\n]+');
-
-/// Returns the error message held by a [chunk] of stderr, or an empty string
-/// when the chunk holds nothing worth reporting.
-///
-/// Blank lines and the [_startupLockNotice] are dropped. The `flutter` tool
-/// also clears that notice by overwriting it with spaces, which is why
-/// whitespace-only output is ignored.
-String _toErrorMessage(String chunk) {
-  return chunk
-      .split(_lineBreak)
-      .map((line) => line.trim())
-      .where((line) => line.isNotEmpty && !line.contains(_startupLockNotice))
-      .join('\n');
-}
-
 /// Terminates [process] and completes once it has exited, or once every step
 /// below has run out of time:
 ///
@@ -237,6 +218,24 @@ extension on Stream<List<int>> {
         .map<Map<String, Object?>>(_tryDecode)
         .where((value) => value.isNotEmpty)
         .map(TestEvent.fromJson);
+  }
+
+  /// Decodes stderr into the error messages worth reporting.
+  ///
+  /// The bytes are decoded and split into lines before filtering, so the
+  /// buffering spans reads: a [_startupLockNotice] or multi-byte character
+  /// split across chunks is handled the same as one that arrives whole.
+  ///
+  /// Blank lines and the [_startupLockNotice] are dropped. The `flutter` tool
+  /// prints that notice while it waits for another `flutter` command to finish
+  /// starting up (for example when several `flutter test` processes start at
+  /// once) and then clears it by overwriting it with spaces, which is why
+  /// whitespace-only lines are ignored.
+  Stream<String> mapToErrorMessages() {
+    return transform(utf8.decoder)
+        .transform(const LineSplitter())
+        .map((line) => line.trim())
+        .where((line) => line.isNotEmpty && !line.contains(_startupLockNotice));
   }
 
   Map<String, Object?> _tryDecode(String value) {

@@ -169,8 +169,9 @@ void main() {
       final errors = <String>[];
       final testEvents = dartTest(startProcess: testProcess.start);
       final subscription = testEvents.listen(events.add, onError: errors.add);
-      stderrController.add(utf8.encode(expectedError));
+      stderrController.add(utf8.encode('$expectedError\n'));
       await stdoutController.close();
+      await pumpEventQueue();
       expect(events, isEmpty);
       expect(errors, equals([expectedError]));
       unawaited(subscription.cancel());
@@ -277,8 +278,9 @@ void main() {
       final errors = <String>[];
       final testEvents = flutterTest(startProcess: testProcess.start);
       final subscription = testEvents.listen(events.add, onError: errors.add);
-      stderrController.add(utf8.encode(expectedError));
+      stderrController.add(utf8.encode('$expectedError\n'));
       await stdoutController.close();
+      await pumpEventQueue();
       expect(events, isEmpty);
       expect(errors, equals([expectedError]));
       unawaited(subscription.cancel());
@@ -986,9 +988,37 @@ void main() {
           expect(errors, equals(['oops']));
         });
 
-        test('keeps the lines of a multiline error together', () async {
+        test('drops the startup lock notice split across chunks', () async {
+          // A pipe does not deliver stderr in line-aligned chunks, so the
+          // notice can arrive across several reads.
+          final errors = await errorsFor([
+            'Waiting for another flutter command ',
+            'to release the ',
+            'startup lock...\r',
+          ]);
+          expect(errors, isEmpty);
+        });
+
+        test('decodes multi-byte characters split across chunks', () async {
+          // "é" is two bytes in UTF-8; splitting it must not throw.
+          final bytes = utf8.encode('é\n');
+          process.stderrController
+            ..add(bytes.sublist(0, 1))
+            ..add(bytes.sublist(1));
+          final errors = <Object>[];
+          final subscription = runTest(
+            startProcess: _startProcessReturning(process),
+          ).listen((_) {}, onError: errors.add);
+          await pumpEventQueue();
+          process.terminate();
+          await subscription.asFuture<void>();
+          await subscription.cancel();
+          expect(errors, equals(['é']));
+        });
+
+        test('emits each line of a multiline error separately', () async {
           final errors = await errorsFor(['first\n  second\n']);
-          expect(errors, equals(['first\nsecond']));
+          expect(errors, equals(['first', 'second']));
         });
       });
     }
