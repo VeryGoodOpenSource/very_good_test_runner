@@ -15,6 +15,20 @@
 
 - add ExitTestEvent to indicate the process has exited ([#6](https://github.com/VeryGoodOpenSource/very_good_test_runner/issues/6)) ([8f37fbd](https://github.com/VeryGoodOpenSource/very_good_test_runner/commit/8f37fbde9dafaef5702b75c8aad06e4fdca0d015))
 
+## [0.6.0](https://github.com/VeryGoodOpenSource/very_good_test_runner/compare/v0.5.0...v0.6.0) (2026-11-23)
+
+
+### Features
+
+* ensure test process exits when stream is cancelled ([#70](https://github.com/VeryGoodOpenSource/very_good_test_runner/issues/70)) ([98954b7](https://github.com/VeryGoodOpenSource/very_good_test_runner/commit/98954b7e5a65a78405108d9cb26ea8bfdaf4c135))
+* upgrade to Dart 3.14.0 ([#75](https://github.com/VeryGoodOpenSource/very_good_test_runner/issues/75)) ([2a20689](https://github.com/VeryGoodOpenSource/very_good_test_runner/commit/2a20689fc67fd0c27afea73e490f8e206797c74d)), closes [#73](https://github.com/VeryGoodOpenSource/very_good_test_runner/issues/73)
+
+
+### Bug Fixes
+
+* emit exit event when pipes close before the process exits ([#74](https://github.com/VeryGoodOpenSource/very_good_test_runner/issues/74)) ([b7007e5](https://github.com/VeryGoodOpenSource/very_good_test_runner/commit/b7007e595c8cba0fbe1e2dff959103aaeccbf512))
+* ignore flutter startup lock notice on stderr ([#76](https://github.com/VeryGoodOpenSource/very_good_test_runner/issues/76)) ([b2966ec](https://github.com/VeryGoodOpenSource/very_good_test_runner/commit/b2966ec1208eb0e2890311a861a7e29b5b769795))
+
 ## [0.5.0](https://github.com/VeryGoodOpenSource/very_good_test_runner/compare/v0.4.0...v0.5.0) (2026-11-05)
 
 
