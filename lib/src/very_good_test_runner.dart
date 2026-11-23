@@ -123,22 +123,28 @@ Stream<TestEvent> _runTestProcess(
     final process = await processFuture;
     final errors = process.stderr.mapToErrorMessages();
     final testEvents = process.stdout.mapToTestEvents();
-    errorSubscription = errors.listen(controller.addError);
+    // Track pipe completion from the start: the pipes may close before the
+    // process exits, and `asFuture` on an already-done subscription never
+    // completes.
+    final errorsDone = Completer<void>();
+    final testEventsDone = Completer<void>();
+    errorSubscription = errors.listen(
+      controller.addError,
+      onDone: errorsDone.complete,
+    );
     testEventSubscription = testEvents.listen(
       controller.add,
       onError: controller.addError,
+      onDone: testEventsDone.complete,
     );
 
     final exitCode = await process.exitCode;
     hasExited = true;
     // Drain remaining events before emitting the exit event. If the
-    // subscription is cancelled meanwhile, onCancel cancels the pipes, so their
-    // futures would never complete; stop waiting instead.
+    // subscription is cancelled meanwhile, onCancel cancels the pipes, so they
+    // would never complete; stop waiting instead.
     await Future.any([
-      Future.wait([
-        errorSubscription.asFuture<void>(),
-        testEventSubscription.asFuture<void>(),
-      ]),
+      Future.wait([errorsDone.future, testEventsDone.future]),
       cancelled.future,
     ]);
     stopwatch.stop();
